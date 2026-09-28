@@ -34,7 +34,7 @@ Target leakage
 :data:`LEAKING_COLUMNS` lists columns that encode the outcome and therefore
 may never be features. Measured on the fixture 2026-09-11: ``denial_reason-1``
 is populated (value ``10`` = "not applicable") for 41,505 of 50,000 rows and
-carries the employer's own stated denial reason on the rest; ``purchaser_type``
+carries the lender's own stated denial reason on the rest; ``purchaser_type``
 is non-zero only for loans that were originated and then sold. Pricing and
 terms columns (``interest_rate``, ``rate_spread``, ``total_loan_costs``,
 ``loan_term``, ``aus-*``, ...) exist only once a loan is acted on, so they are
