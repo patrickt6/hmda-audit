@@ -32,8 +32,9 @@ local, gitignored files (`src/hmda/fairness/air.py:152-154`,
 
 ## 1. What the audit does
 
-1. It loads 36,734,685 public US mortgage applications (2023 to 2025, 5,329
-   lenders) and, for each lender and for the country as a whole, compares
+1. It loads 36,734,685 public US mortgage records (2023 to 2025, 5,329
+   lenders), which is 32,620,789 applications once purchased loans are
+   taken out, and, for each lender and for the country as a whole, compares
    how often each race, ethnicity and sex group gets approved.
 2. It then asks how much of each raw gap is left after adjusting for a few
    credit factors, and which lenders' gaps are too large to be explained by
@@ -147,8 +148,16 @@ Joint                        564,711   108,563  0.8078
 Black vs Joint is 0.8497 under the screen's definition
 (`results/four_fifths.json`) and 0.6351 / 0.8078 = 0.786 under the
 decision-only definition. The first is above 0.8 and the second is below
-it. The committed result uses the first definition. This is an observation
-from one query, not a re-run of the screen.
+it. The screen uses the first definition.
+`scripts/four_fifths_decisions_only.py` computes the national ratios under
+the second: it runs `sql/air_by_group_decisions_only.sql` with the screen's
+reference rule and 100-row floor and writes
+`results/four_fifths_decisions_only.json`. Under that definition four
+named race groups fall below 0.8 nationally (Black 0.7862, American Indian
+or Alaska Native 0.7808, Native Hawaiian or Other Pacific Islander 0.7704,
+2 or more minority races 0.7621), plus Free Form Text Only. Under the screen's definition only Free Form Text Only does. The
+per-lender screen (614 flagged) has not been rerun under the second
+definition.
 
 ## 3. Architecture
 

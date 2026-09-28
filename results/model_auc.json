@@ -1,0 +1,67 @@
+{
+  "command": ".venv/bin/python scripts/model_auc.py",
+  "source": "SOURCE: national -- 36,734,685 rows, all states, data/parquet/*.parquet (raw, uncleaned)",
+  "status": "SAMPLE_BASED",
+  "sample_n": 1500000,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "train_years": [
+    2023,
+    2024
+  ],
+  "test_year": 2025,
+  "analysis_rows_note": "action_taken 1, 2 and 3 only; purchased loans and non-decisions are dropped before the split",
+  "baseline": "a constant score (the training denial rate) cannot order any pair, so its AUC is 0.5",
+  "gini_note": "Gini = 2 x AUC - 1, the same number that hmda model --eval prints as percent better than a base-rate guess",
+  "mean": {
+    "logistic_regression_auc": 0.7834,
+    "gradient_boosted_trees_auc": 0.8604,
+    "logistic_regression_gini": 0.5668,
+    "gradient_boosted_trees_gini": 0.7209,
+    "rows_test": 380329
+  },
+  "by_seed": [
+    {
+      "seed": 0,
+      "rows_sample": 1500000,
+      "rows_analysis": 1058400,
+      "rows_train": 678035,
+      "rows_test": 380365,
+      "test_denial_rate": 0.2237,
+      "baseline_auc": 0.5,
+      "logistic_regression_auc": 0.7829,
+      "gradient_boosted_trees_auc": 0.8597,
+      "logistic_regression_gini": 0.5657,
+      "gradient_boosted_trees_gini": 0.7194
+    },
+    {
+      "seed": 1,
+      "rows_sample": 1500000,
+      "rows_analysis": 1060642,
+      "rows_train": 680291,
+      "rows_test": 380351,
+      "test_denial_rate": 0.224,
+      "baseline_auc": 0.5,
+      "logistic_regression_auc": 0.7847,
+      "gradient_boosted_trees_auc": 0.8614,
+      "logistic_regression_gini": 0.5695,
+      "gradient_boosted_trees_gini": 0.7229
+    },
+    {
+      "seed": 2,
+      "rows_sample": 1500000,
+      "rows_analysis": 1060029,
+      "rows_train": 679757,
+      "rows_test": 380272,
+      "test_denial_rate": 0.2234,
+      "baseline_auc": 0.5,
+      "logistic_regression_auc": 0.7826,
+      "gradient_boosted_trees_auc": 0.8601,
+      "logistic_regression_gini": 0.5653,
+      "gradient_boosted_trees_gini": 0.7203
+    }
+  ]
+}

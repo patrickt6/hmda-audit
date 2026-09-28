@@ -136,8 +136,10 @@ def main() -> None:
 
     scale = register_result("scale")
     air = register_result("four_fifths")
+    air_decisions = register_result("four_fifths_decisions_only")
     controlled = register_result("controlled")
     model = register_result("model_eval")
+    model_auc = register_result("model_auc")
     watch = register_result("watch_list", basis="MEASURED")
     spark = register_result("spark_parity", basis="MEASURED")
     independent = register_result("independent_check")
@@ -154,6 +156,15 @@ def main() -> None:
           air, "MEASURED",
           ["outputs.lenders_flagged == 614", "outputs.lenders_screened == 5329",
            "outputs.threshold == 0.8", "outputs.min_count == 100"])
+    state("hmda-four-fifths-decisions",
+          "National four-fifths ratios when only lender decisions (action_taken 1, 2, 3) count",
+          air_decisions, "MEASURED",
+          ["outputs.black_vs_reference_ratio == 0.7862",
+           "outputs.black_reference_group == 'Joint'",
+           "outputs.race_groups_below_threshold_count == 5",
+           "outputs.race_groups_below_threshold_excluding_free_form == 4",
+           "outputs.rows_counted == 25949898", "outputs.threshold == 0.8",
+           "outputs.min_count == 100"])
     state("hmda-controlled", "Black and Joint applicants' denial-rate gap, raw and controlled",
           controlled, "SAMPLE_BASED",
           ["outputs.raw_gap_pp == 12.44", "outputs.controlled_gap_pp == 8.23",
@@ -163,6 +174,13 @@ def main() -> None:
           ["outputs.better_than_base_rate_pct.gradient_boosted_trees == 72",
            "outputs.better_than_base_rate_pct.logistic_regression == 57",
            "outputs.sample_n == 1500000"])
+    state("hmda-model-auc", "Ranking AUC and Gini of the denial models on the 2025 holdout, national sample",
+          model_auc, "SAMPLE_BASED",
+          ["outputs.mean.gradient_boosted_trees_auc == 0.8604",
+           "outputs.mean.logistic_regression_auc == 0.7834",
+           "outputs.mean.gradient_boosted_trees_gini == 0.7209",
+           "outputs.mean.logistic_regression_gini == 0.5668",
+           "outputs.test_year == 2025", "outputs.sample_n == 1500000"])
     state("hmda-watch-list", "Empirical-Bayes lender watch list, Black against White denial gap",
           watch, "MEASURED",
           ["outputs.watch_list == 404", "outputs.lenders_scored == 3454",
@@ -198,7 +216,7 @@ def main() -> None:
            "outputs.not_implemented == 1"])
     state("hmda-tests", "Most recent full test-suite run, as recorded in results/metrics_ledger.json",
           tests, "REPORTED", ["outputs.passed == 326", "outputs.skipped == 6"])
-    print("recorded: hmda-scale hmda-four-fifths hmda-controlled hmda-model hmda-watch-list "
+    print("recorded: hmda-scale hmda-four-fifths hmda-four-fifths-decisions hmda-controlled hmda-model hmda-model-auc hmda-watch-list "
           "hmda-spark-parity hmda-independent hmda-race-probe hmda-mutation "
           "hmda-engineering hmda-governance hmda-tests")
 

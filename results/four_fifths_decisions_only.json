@@ -1,0 +1,213 @@
+{
+  "command": ".venv/bin/python scripts/four_fifths_decisions_only.py",
+  "sql": "sql/air_by_group_decisions_only.sql",
+  "source": "SOURCE: national -- 36,734,685 rows, all states, data/parquet/*.parquet (raw, uncleaned)",
+  "status": "MEASURED",
+  "definition": "approval rate = 1 - denials / decisions, over action_taken 1, 2 and 3 only",
+  "screen_definition": "the four-fifths screen (results/four_fifths.json) uses every record except action_taken 6",
+  "threshold": 0.8,
+  "min_count": 100,
+  "reference_rule": "highest approval rate among groups with at least min_count decisions, as in hmda.fairness.air",
+  "action_taken_kept": [
+    1,
+    2,
+    3
+  ],
+  "rows_counted": 25949898,
+  "black_vs_reference_ratio": 0.7862,
+  "black_reference_group": "Joint",
+  "race_groups_below_threshold": [
+    "2 or more minority races",
+    "American Indian or Alaska Native",
+    "Black or African American",
+    "Free Form Text Only",
+    "Native Hawaiian or Other Pacific Islander"
+  ],
+  "race_groups_below_threshold_count": 5,
+  "race_groups_below_threshold_excluding_free_form": 4,
+  "rows": [
+    {
+      "partition": "Race",
+      "group": "2 or more minority races",
+      "decisions": 64704,
+      "denials": 24875,
+      "approval_rate": 0.6156,
+      "reference_group": "Joint",
+      "ratio": 0.7621,
+      "flag": true
+    },
+    {
+      "partition": "Race",
+      "group": "American Indian or Alaska Native",
+      "decisions": 185981,
+      "denials": 68681,
+      "approval_rate": 0.6307,
+      "reference_group": "Joint",
+      "ratio": 0.7808,
+      "flag": true
+    },
+    {
+      "partition": "Race",
+      "group": "Asian",
+      "decisions": 1527704,
+      "denials": 326450,
+      "approval_rate": 0.7863,
+      "reference_group": "Joint",
+      "ratio": 0.9735,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "Black or African American",
+      "decisions": 2233518,
+      "denials": 815053,
+      "approval_rate": 0.6351,
+      "reference_group": "Joint",
+      "ratio": 0.7862,
+      "flag": true
+    },
+    {
+      "partition": "Race",
+      "group": "Free Form Text Only",
+      "decisions": 6938,
+      "denials": 3782,
+      "approval_rate": 0.4549,
+      "reference_group": "Joint",
+      "ratio": 0.5631,
+      "flag": true
+    },
+    {
+      "partition": "Race",
+      "group": "Joint",
+      "decisions": 564711,
+      "denials": 108563,
+      "approval_rate": 0.8078,
+      "reference_group": "Joint",
+      "ratio": 1.0,
+      "flag": false,
+      "is_reference": true
+    },
+    {
+      "partition": "Race",
+      "group": "Native Hawaiian or Other Pacific Islander",
+      "decisions": 62100,
+      "denials": 23455,
+      "approval_rate": 0.6223,
+      "reference_group": "Joint",
+      "ratio": 0.7704,
+      "flag": true
+    },
+    {
+      "partition": "Race",
+      "group": "Race Not Available",
+      "decisions": 4564905,
+      "denials": 1218839,
+      "approval_rate": 0.733,
+      "reference_group": "Joint",
+      "ratio": 0.9075,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "White",
+      "decisions": 16739337,
+      "denials": 3576956,
+      "approval_rate": 0.7863,
+      "reference_group": "Joint",
+      "ratio": 0.9735,
+      "flag": false
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Ethnicity Not Available",
+      "decisions": 4233112,
+      "denials": 1101992,
+      "approval_rate": 0.7397,
+      "reference_group": "Joint",
+      "ratio": 0.9333,
+      "flag": false
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Free Form Text Only",
+      "decisions": 12116,
+      "denials": 5587,
+      "approval_rate": 0.5389,
+      "reference_group": "Joint",
+      "ratio": 0.6799,
+      "flag": true
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Hispanic or Latino",
+      "decisions": 3063499,
+      "denials": 923488,
+      "approval_rate": 0.6986,
+      "reference_group": "Joint",
+      "ratio": 0.8814,
+      "flag": false
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Joint",
+      "decisions": 663132,
+      "denials": 137563,
+      "approval_rate": 0.7926,
+      "reference_group": "Joint",
+      "ratio": 1.0,
+      "flag": false,
+      "is_reference": true
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Not Hispanic or Latino",
+      "decisions": 17978039,
+      "denials": 3998024,
+      "approval_rate": 0.7776,
+      "reference_group": "Joint",
+      "ratio": 0.9812,
+      "flag": false
+    },
+    {
+      "partition": "Sex",
+      "group": "Female",
+      "decisions": 5820006,
+      "denials": 1668897,
+      "approval_rate": 0.7132,
+      "reference_group": "Joint",
+      "ratio": 0.8684,
+      "flag": false
+    },
+    {
+      "partition": "Sex",
+      "group": "Joint",
+      "decisions": 9015566,
+      "denials": 1611114,
+      "approval_rate": 0.8213,
+      "reference_group": "Joint",
+      "ratio": 1.0,
+      "flag": false,
+      "is_reference": true
+    },
+    {
+      "partition": "Sex",
+      "group": "Male",
+      "decisions": 8765720,
+      "denials": 2290465,
+      "approval_rate": 0.7387,
+      "reference_group": "Joint",
+      "ratio": 0.8994,
+      "flag": false
+    },
+    {
+      "partition": "Sex",
+      "group": "Sex Not Available",
+      "decisions": 2348606,
+      "denials": 596178,
+      "approval_rate": 0.7462,
+      "reference_group": "Joint",
+      "ratio": 0.9085,
+      "flag": false
+    }
+  ]
+}
