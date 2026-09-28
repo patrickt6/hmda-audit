@@ -1,0 +1,15 @@
+{
+  "source": "docs/VERIFICATION.md, section 7; src/hmda/cli.py (the mitigate command)",
+  "headline": "The national mitigation figures were recorded by hand, without the console output.",
+  "claims": [
+    {
+      "locator": "docs/VERIFICATION.md, section 7 (Mitigation)",
+      "quote": "Only the result figures below were written down from these runs, not the full console output, so they have not been checked a second time."
+    },
+    {
+      "locator": "src/hmda/cli.py, the mitigate command",
+      "quote": "`mitigate` takes `--source`, `--sample-n` and `--sample-seed`, so the national run can be repeated with `hmda mitigate --compare --profit --source national --sample-n 1500000 --sample-seed S`."
+    }
+  ],
+  "resolution": "Unresolved, and presented as unresolved. Every other SAMPLE_BASED result in this repository was copied from the console output of its run; these figures were written down by hand without that output, so no national mitigation number is charted on this page and none is quoted in the text above. The measurement ledger lower down still lists the M11 and M12 figures as they were recorded, dollar figures included, so the claim and the caveat sit in the same place."
+}

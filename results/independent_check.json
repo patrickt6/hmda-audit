@@ -1,0 +1,100 @@
+{
+  "command": ".venv/bin/python scripts/air_independent.py",
+  "source": "data/parquet/*.parquet (national, raw), read column-projected with pyarrow",
+  "status": "MEASURED",
+  "min_count": 100,
+  "threshold": 0.8,
+  "files_read": 168,
+  "rows_in_files": 36734685,
+  "group_column_compared": "derived_race",
+  "counts": {
+    "rows_sql": 31793,
+    "rows_independent": 31793,
+    "rows_compared": 31793,
+    "only_in_sql": 0,
+    "only_in_independent": 0,
+    "mismatches": {
+      "applications": 0,
+      "denials": 0,
+      "approval_rate": 0
+    },
+    "max_abs_approval_rate_diff": 0.0
+  },
+  "screen": {
+    "rows_compared": 31793,
+    "status_mismatches": 0,
+    "ratio_mismatches": 0,
+    "max_abs_ratio_diff": 0.0,
+    "rows_undefined_on_both_sides": 1
+  },
+  "flagged_race_only": {
+    "sql": 444,
+    "independent": 444,
+    "both": 444,
+    "symmetric_difference": 0,
+    "explained_by_undefined_ratio": 0,
+    "unexplained": 0
+  },
+  "flagged_all_three_columns": {
+    "sql": 614,
+    "independent": 614,
+    "both": 614,
+    "symmetric_difference": 0,
+    "explained_by_undefined_ratio": 0,
+    "unexplained": 0
+  },
+  "undefined_ratio_lenders_by_column": {
+    "derived_race": 1,
+    "derived_ethnicity": 1,
+    "derived_sex": 1
+  },
+  "undefined_ratio_note": "A lender whose floor-clearing groups were all denied every time has a reference approval rate of 0, so every ratio is 0/0. Both air.py (ratio 'UNDEFINED', since 2026-09-28) and this script treat it as undefined and do not flag it. Before that fix air.py returned 0.0 and flagged the reference group against itself, which made SQL 615 against independent 614.",
+  "files_with_no_applications": [
+    "AS",
+    "MP"
+  ],
+  "totals": {
+    "by_file_state_sums_to_national": {
+      "groups": 56,
+      "applications": 32620789,
+      "denials": 6166654,
+      "pass": true
+    },
+    "by_file_year_sums_to_national": {
+      "groups": 3,
+      "applications": 32620789,
+      "denials": 6166654,
+      "pass": true
+    },
+    "by_state_code_sums_to_national": {
+      "groups": 54,
+      "applications": 32620789,
+      "denials": 6166654,
+      "pass": true
+    },
+    "by_activity_year_sums_to_national": {
+      "groups": 3,
+      "applications": 32620789,
+      "denials": 6166654,
+      "pass": true
+    },
+    "national_from_sql": {
+      "applications": 32620789,
+      "denials": 6166654
+    },
+    "file_state_equals_state_code_column": {
+      "rows_disagreeing": 0,
+      "pass": true
+    },
+    "file_year_equals_activity_year_column": {
+      "rows_disagreeing": 0,
+      "pass": true
+    }
+  },
+  "all_totals_checks_pass": true,
+  "seconds_independent": 6.8,
+  "seconds_sql_path": 1.7,
+  "seconds_sql_flagged_lenders": 0.7,
+  "seconds_total": 8.6,
+  "independence_note": "pyarrow code written from the definition; reads no file in sql/ and calls nothing in rates.py or air.py; floor constant copied from floors.py. The author had read the SQL and air.py first, so shared misreadings would not be caught."
+}

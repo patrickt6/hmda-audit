@@ -1,0 +1,47 @@
+{
+  "source": "console output of the command below at seeds 0, 1 and 2",
+  "command": "hmda model --eval --source national --sample-n 1500000 --sample-seed S",
+  "status": "SAMPLE_BASED",
+  "sample_n": 1500000,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "test_year": 2025,
+  "metric": "how much better than a base-rate guess the model orders a random denied/approved pair (a base-rate guess orders 50 of 100 pairs correctly)",
+  "better_than_base_rate_pct": {
+    "logistic_regression": 57,
+    "gradient_boosted_trees": 72
+  },
+  "pairs_ordered_per_100": {
+    "base_rate": 50,
+    "logistic_regression": 78,
+    "gradient_boosted_trees": 86
+  },
+  "by_seed": [
+    {
+      "seed": 0,
+      "analysis_rows": 1058400,
+      "logistic_regression_pct": 57,
+      "gradient_boosted_trees_pct": 72
+    },
+    {
+      "seed": 1,
+      "analysis_rows": 1060642,
+      "logistic_regression_pct": 57,
+      "gradient_boosted_trees_pct": 72
+    },
+    {
+      "seed": 2,
+      "analysis_rows": 1060029,
+      "logistic_regression_pct": 57,
+      "gradient_boosted_trees_pct": 72
+    }
+  ],
+  "fixture_pct": {
+    "logistic_regression": 61,
+    "gradient_boosted_trees": 75
+  },
+  "note": "Sample numbers, not full-file numbers. The CLI prints whole percentages, so the three seeds agree to 1 point."
+}

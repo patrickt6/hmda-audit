@@ -1,0 +1,19 @@
+{
+  "source": "SOURCE: national -- 36,734,685 rows, all states, data/parquet/*.parquet (raw, uncleaned)",
+  "comparison": "Black or African American vs White, denial-rate gap in percentage points, all years pooled",
+  "method": "normal-normal empirical Bayes, DerSimonian-Laird moments, pooled-rate variances",
+  "min_each": 5,
+  "level": 0.95,
+  "lenders_scored": 3454,
+  "typical_gap_pp": 9.84,
+  "between_lender_sd_pp": 5.93,
+  "four_fifths_flagged_no_floor": 1400,
+  "four_fifths_flagged_min_count_100": 368,
+  "watch_list": 404,
+  "watch_list_and_four_fifths_no_floor": 382,
+  "four_fifths_no_floor_not_on_watch_list": 1018,
+  "watch_list_not_four_fifths_min_count_100": 97,
+  "top_n_with_controlled_gap": 21,
+  "top_n_controlled_gap_still_positive": 21,
+  "top_n_controlled_not_estimable": 4
+}

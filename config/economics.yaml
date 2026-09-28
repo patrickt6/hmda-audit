@@ -1,0 +1,57 @@
+# Margin and loss-given-default assumptions behind M12 (hmda mitigate --profit).
+# These are a config file, not a constant in code, so the
+# printed profit number is falsifiable and a reviewer can ask "what did you
+# assume?" and get an answer from this file, not from source code.
+#
+# PROVENANCE OF THESE THREE NUMBERS, STATED PLAINLY.
+# They are ILLUSTRATIVE ASSUMPTIONS. They are NOT measured, and no FDIC, OCC,
+# CFPB or other publication was opened to obtain them. This is allowed
+# here, provided the label is explicit: the point
+# of M12 is that the assumption is visible and changeable, not that it is
+# authoritative. The HMDA register carries no margin, no default flag and no
+# loss data, so no value here can be derived from the data the repo holds.
+# Anyone who disagrees with a number edits this file and re-runs; the printed
+# result moves. That is the whole design.
+#
+# Units.
+#   expected_margin_per_approved_loan_usd  US dollars per ORIGINATED loan,
+#       net, over the life of the loan.
+#   loss_given_default_rate                fraction of PRINCIPAL lost when a
+#       loan defaults, in [0, 1].
+#   default_rate_assumption                probability that an originated
+#       loan defaults, in [0, 1].
+#
+# The principal itself is NOT an assumption: it is read from the fixture's
+# own loan_amount column for the applications each model would approve.
+#
+# Why the margin is set where it is, since a number has to be picked.
+# The mean principal of approved held-out applications in the fixture is
+# $632,740 (measured 2026-09-11 with pandas on tests/fixtures/hmda_50k.parquet;
+# the median is $405,000 and one multifamily loan reaches $139,405,000, so the
+# mean is heavily right-skewed). At the two rates below, expected loss per
+# originated loan is therefore about $3,164. A margin of $12,000 is roughly
+# 1.9% of that mean principal over the life of the loan, and it is set ABOVE
+# the expected loss because no lender originates a loan with negative expected
+# value; a first draft of this file used $2,000, which put expected value per
+# approved loan at about minus $1,500 and made "approve fewer people" the
+# profit-maximising answer. That was an artifact of an incoherent assumption
+# set, not a finding, and the run now prints the sign warning that says so.
+
+expected_margin_per_approved_loan_usd: 12000.0
+loss_given_default_rate: 0.25
+default_rate_assumption: 0.02
+
+notes: >
+  Illustrative assumptions, not measured, no source opened. The expected
+  value of one approved application is
+  expected_margin_per_approved_loan_usd minus
+  (default_rate_assumption * loss_given_default_rate * mean principal), and
+  the mean principal comes from the data, not from this file. KNOWN
+  LIMITATION, printed by the profit run and repeated here: a single default
+  rate is applied to every approval, including applications the historical
+  lender denied. Those are plausibly riskier, so this understates the cost
+  of approving more people and therefore FLATTERS every mitigation
+  technique that raises the approval count. Estimating a second, higher
+  default rate for historically-denied applicants would require a number
+  the HMDA register does not contain, so the limitation is stated rather
+  than papered over with an invented figure.

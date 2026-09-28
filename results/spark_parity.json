@@ -1,0 +1,16 @@
+{
+  "rows_spark": 31793,
+  "rows_duckdb": 31793,
+  "only_in_spark": 0,
+  "only_in_duckdb": 0,
+  "value_mismatches": 0,
+  "total_applications_spark": 32620789,
+  "total_applications_duckdb": 32620789,
+  "total_denials_spark": 6166654,
+  "total_denials_duckdb": 6166654,
+  "seconds_spark_incl_api": 20.7,
+  "seconds_duckdb": 0.3,
+  "checked_on": "2026-09-28",
+  "engine_a": "Spark SQL on Databricks (Delta table workspace.hmda.lar_national)",
+  "engine_b": "DuckDB on local parquet"
+}

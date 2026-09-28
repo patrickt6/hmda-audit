@@ -1,0 +1,716 @@
+{
+ "command": "mutmut run (mutmut 3.8.0) in a separate git worktree; config in pyproject.toml [tool.mutmut]",
+ "status": "MEASURED",
+ "code_state": "before the 0/0 UNDEFINED fix in air.py",
+ "code_state_note": "the three runs below measured air.py, rates.py, shrink.py and floors.py before the 0/0 UNDEFINED fix changed air.py. See 'rerun_2026_09_28' below for the current code.",
+ "run_on": "2026-09-28, macOS, Python 3.12",
+ "targets": [
+  "src/hmda/fairness/air.py",
+  "src/hmda/fairness/rates.py",
+  "src/hmda/fairness/shrink.py",
+  "src/hmda/fairness/floors.py"
+ ],
+ "runs": [
+  {
+   "tests": "existing tests only: test_air, test_rates, test_shrink, test_no_lender_named",
+   "total": 474,
+   "killed": 383,
+   "survived": 91,
+   "timeout": 0,
+   "no_tests": 0,
+   "score": 0.808
+  },
+  {
+   "tests": "plus tests/test_properties.py (Hypothesis)",
+   "total": 474,
+   "killed": 409,
+   "survived": 65,
+   "timeout": 0,
+   "no_tests": 0,
+   "score": 0.863
+  },
+  {
+   "tests": "plus tests/test_contract_details.py (written to kill survivors)",
+   "total": 474,
+   "killed": 463,
+   "survived": 11,
+   "timeout": 0,
+   "no_tests": 0,
+   "score": 0.977
+  }
+ ],
+ "final_by_file": {
+  "air.py": {
+   "killed": 133,
+   "survived": 4
+  },
+  "rates.py": {
+   "killed": 101,
+   "survived": 4
+  },
+  "shrink.py": {
+   "killed": 228,
+   "survived": 3
+  },
+  "floors.py": {
+   "killed": 1,
+   "survived": 0
+  }
+ },
+ "score_note": "score = killed / total. All 11 final survivors were inspected and judged equivalent, unreachable, or dependent on the case-insensitive file system; none is a missing test for reachable behaviour. The first run already includes the new ValueError guard in shrink.py, whose lines the old tests did not cover.",
+ "surviving_mutants": [
+  {
+   "where": "src/hmda/fairness/shrink.py:135",
+   "mutation": "w_re = 1.0/(v+tau2) -> 2.0/(v+tau2)",
+   "verdict": "equivalent: mu is a weighted mean, so scaling every weight by 2 leaves it unchanged"
+  },
+  {
+   "where": "src/hmda/fairness/shrink.py:140",
+   "mutation": "'if tau2 > 0' -> 'if (tau2 > 0) or True'",
+   "verdict": "equivalent: when tau2 == 0 the formula tau2/(tau2+v) already gives 0.0"
+  },
+  {
+   "where": "src/hmda/fairness/shrink.py:140",
+   "mutation": "'tau2 > 0' -> 'tau2 >= 0'",
+   "verdict": "equivalent: same reason as above"
+  },
+  {
+   "where": "src/hmda/fairness/air.py:55",
+   "mutation": "'air_by_group.sql' -> 'AIR_BY_GROUP.SQL'",
+   "verdict": "environment-dependent: survives on the case-insensitive macOS file system where mutmut ran; on Linux the file is not found and the mutant would die"
+  },
+  {
+   "where": "src/hmda/fairness/air.py:131",
+   "mutation": "'air_by_lei_group.sql' -> 'AIR_BY_LEI_GROUP.SQL'",
+   "verdict": "environment-dependent: same as above"
+  },
+  {
+   "where": "src/hmda/fairness/rates.py:143",
+   "mutation": "'rates_by_group.sql' -> 'RATES_BY_GROUP.SQL'",
+   "verdict": "environment-dependent: same as above"
+  },
+  {
+   "where": "src/hmda/fairness/air.py:140",
+   "mutation": "group_column -> None in the _air_rows_from_raw call inside flagged_lenders",
+   "verdict": "equivalent: flagged_lenders reads only .flagged, which does not depend on the label fields"
+  },
+  {
+   "where": "src/hmda/fairness/air.py:140",
+   "mutation": "lei -> None in the same call",
+   "verdict": "equivalent: same reason"
+  },
+  {
+   "where": "src/hmda/fairness/rates.py:46",
+   "mutation": "second identifier-guard message -> None",
+   "verdict": "unreachable: the allowlist check above it rejects every name this guard could reject (the source comment says so)"
+  },
+  {
+   "where": "src/hmda/fairness/rates.py:148",
+   "mutation": "'if applications' -> 'if (applications) or True'",
+   "verdict": "unreachable else branch: a SQL group from count(*) always has at least 1 application"
+  },
+  {
+   "where": "src/hmda/fairness/rates.py:148",
+   "mutation": "else 0.0 -> else 1.0",
+   "verdict": "unreachable else branch: same reason"
+  }
+ ],
+ "rerun_2026_09_28": {
+  "command": "mutmut run (mutmut 3.8.0) in a separate git worktree; config in pyproject.toml [tool.mutmut]",
+  "reason": "the 0/0 UNDEFINED ratio fix changed air.py and added tests; the runs above measured the code before that fix, so it was re-measured against the current code.",
+  "code_state": "current code, after the 0/0 fix and the test fix described in 'note'",
+  "run_on": "2026-09-28, macOS, Python 3.12",
+  "run": {
+   "tests": "test_air, test_rates, test_shrink, test_no_lender_named, test_properties, test_contract_details (same selection as pyproject.toml [tool.mutmut]; tests/test_air.py::test_lender_that_denied_every_application_is_not_flagged now also asserts row.lei and row.group_column on the UNDEFINED row)",
+   "total": 487,
+   "killed": 476,
+   "survived": 11,
+   "timeout": 0,
+   "no_tests": 0,
+   "score": 0.977
+  },
+  "note": "air.py grew from 137 to 150 mutants after the fix (the new UNDEFINED branch adds mutable code). The first pass on the fixed code, before the test fix, scored 474/487 (0.973) with 13 survivors: the 11 below, plus two new ones, 'lei -> None' and 'group_column -> None' inside the UNDEFINED branch's AIRRow construction in _air_rows_from_raw (then at air.py lines 119 and 118). Neither was caught, because the UNDEFINED-branch regression test (tests/test_air.py::test_lender_that_denied_every_application_is_not_flagged, added with the fix) checked only row.ratio and row.flagged, not row.lei or row.group_column, even though those fields are pinned for the SUPPRESSED and normal-ratio branches by tests/test_contract_details.py::test_air_rows_carry_their_scope_fields. Extending the UNDEFINED-branch test to check row.lei and row.group_column killed both mutants without adding a new test function or changing the passed/skipped test counts (still 326 passed, 6 skipped). The rerun above is the result after that test fix. The remaining 11 survivors are the same ones documented in 'surviving_mutants' above: rates.py and shrink.py did not change between the two runs (checked with git diff), so their line numbers and verdicts still apply; the air.py survivors (AIR_BY_GROUP.SQL / AIR_BY_LEI_GROUP.SQL casing, and the two None-argument mutants inside flagged_lenders' call to _air_rows_from_raw) were re-inspected against the current source and judged the same: filesystem-case-dependent or equivalent.",
+  "final_by_file": {
+   "air.py": {
+    "killed": 146,
+    "survived": 4
+   },
+   "rates.py": {
+    "killed": 101,
+    "survived": 4
+   },
+   "shrink.py": {
+    "killed": 228,
+    "survived": 3
+   },
+   "floors.py": {
+    "killed": 1,
+    "survived": 0
+   }
+  },
+  "surviving_mutants": [
+   {
+    "where": "src/hmda/fairness/shrink.py:135",
+    "mutation": "w_re = 1.0/(v+tau2) -> 2.0/(v+tau2)",
+    "verdict": "equivalent: mu is a weighted mean, so scaling every weight by 2 leaves it unchanged"
+   },
+   {
+    "where": "src/hmda/fairness/shrink.py:140",
+    "mutation": "'if tau2 > 0' -> 'if (tau2 > 0) or True'",
+    "verdict": "equivalent: when tau2 == 0 the formula tau2/(tau2+v) already gives 0.0"
+   },
+   {
+    "where": "src/hmda/fairness/shrink.py:140",
+    "mutation": "'tau2 > 0' -> 'tau2 >= 0'",
+    "verdict": "equivalent: same reason as above"
+   },
+   {
+    "where": "src/hmda/fairness/air.py:71",
+    "mutation": "'air_by_group.sql' -> 'AIR_BY_GROUP.SQL'",
+    "verdict": "environment-dependent: survives on the case-insensitive macOS file system where mutmut ran; on Linux the file is not found and the mutant would die"
+   },
+   {
+    "where": "src/hmda/fairness/air.py:164",
+    "mutation": "'air_by_lei_group.sql' -> 'AIR_BY_LEI_GROUP.SQL'",
+    "verdict": "environment-dependent: same as above"
+   },
+   {
+    "where": "src/hmda/fairness/rates.py:143",
+    "mutation": "'rates_by_group.sql' -> 'RATES_BY_GROUP.SQL'",
+    "verdict": "environment-dependent: same as above"
+   },
+   {
+    "where": "src/hmda/fairness/air.py:173",
+    "mutation": "group_column -> None in the _air_rows_from_raw call inside flagged_lenders",
+    "verdict": "equivalent: flagged_lenders reads only .flagged, which does not depend on the label fields"
+   },
+   {
+    "where": "src/hmda/fairness/air.py:173",
+    "mutation": "lei -> None in the same call",
+    "verdict": "equivalent: same reason"
+   },
+   {
+    "where": "src/hmda/fairness/rates.py:46",
+    "mutation": "second identifier-guard message -> None",
+    "verdict": "unreachable: the allowlist check above it rejects every name this guard could reject (the source comment says so)"
+   },
+   {
+    "where": "src/hmda/fairness/rates.py:148",
+    "mutation": "'if applications' -> 'if (applications) or True'",
+    "verdict": "unreachable else branch: a SQL group from count(*) always has at least 1 application"
+   },
+   {
+    "where": "src/hmda/fairness/rates.py:148",
+    "mutation": "else 0.0 -> else 1.0",
+    "verdict": "unreachable else branch: same reason"
+   }
+  ]
+ },
+ "controlled_py": {
+  "tests": "tests/test_controlled.py plus tests/test_contract_details.py",
+  "total": 358,
+  "killed": 260,
+  "survived": 98,
+  "timeout": 0,
+  "score": 0.726,
+  "before_new_test": {
+   "tests": "tests/test_controlled.py only",
+   "killed": 252,
+   "survived": 106,
+   "score": 0.704
+  },
+  "note": "Needs single-threaded BLAS in forked workers on macOS (OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES, OMP_NUM_THREADS=1, VECLIB_MAXIMUM_THREADS=1); without them 136 to 187 mutants crashed instead of running. One test was added (raw gap sign and size); it killed the survivor that flipped the denial indicator to action_taken != 3. The other 98 survivors were NOT triaged. Line numbers are the first source line that matches the mutated text, so a repeated line may point at its first copy.",
+  "surviving_mutants": [
+   {
+    "where": "src/hmda/fairness/controlled.py:163",
+    "before": "return (frame[\"action_taken\"].astype(str) == DENIAL_CODE).astype(int)",
+    "after": "return (frame[\"action_taken\"].astype(str) == DENIAL_CODE).astype(None)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:169",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA), other=None)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:169",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA), )"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:170",
+    "before": "thousands = pd.to_numeric(raw, errors=\"coerce\")",
+    "after": "thousands = pd.to_numeric(raw, )"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:171",
+    "before": "return thousands * 1000.0",
+    "after": "return thousands / 1000.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:171",
+    "before": "return thousands * 1000.0",
+    "after": "return thousands * 1001.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:177",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), other=None)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:177",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), )"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:177",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA & {\"Exempt\"}), other=np.nan)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:177",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"XXExemptXX\"}), other=np.nan)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:177",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"exempt\"}), other=np.nan)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:177",
+    "before": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"Exempt\"}), other=np.nan)",
+    "after": "raw = raw.where(~raw.isin(_GENERIC_NA | {\"EXEMPT\"}), other=np.nan)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:178",
+    "before": "return pd.to_numeric(raw, errors=\"coerce\")",
+    "after": "return pd.to_numeric(raw, )"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:201",
+    "before": "range_match = _DTI_RANGE_RE.match(text)",
+    "after": "range_match = None"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:203",
+    "before": "low, high = float(range_match.group(1)), float(range_match.group(2))",
+    "after": "low, high = float(range_match.group(2)), float(range_match.group(2))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:204",
+    "before": "return (low + high) / 2.0",
+    "after": "return (low + high) * 2.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:204",
+    "before": "return (low + high) / 2.0",
+    "after": "return (low - high) / 2.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:204",
+    "before": "return (low + high) / 2.0",
+    "after": "return (low + high) / 3.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:205",
+    "before": "lt_match = _DTI_LT_RE.match(text)",
+    "after": "lt_match = None"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:207",
+    "before": "return float(lt_match.group(1)) / 2.0",
+    "after": "return float(lt_match.group(1)) * 2.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:207",
+    "before": "return float(lt_match.group(1)) / 2.0",
+    "after": "return float(lt_match.group(1)) / 3.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:208",
+    "before": "gt_match = _DTI_GT_RE.match(text)",
+    "after": "gt_match = None"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:210",
+    "before": "return float(gt_match.group(1)) + 5.0",
+    "after": "return float(gt_match.group(1)) - 5.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:210",
+    "before": "return float(gt_match.group(1)) + 5.0",
+    "after": "return float(gt_match.group(1)) + 6.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:222",
+    "before": "return raw.where(~raw.isin(_GENERIC_NA), other=\"missing\")",
+    "after": "return raw.where(~raw.isin(_GENERIC_NA), other=None)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:222",
+    "before": "return raw.where(~raw.isin(_GENERIC_NA), other=\"missing\")",
+    "after": "return raw.where(~raw.isin(_GENERIC_NA), )"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:222",
+    "before": "return raw.where(~raw.isin(_GENERIC_NA), other=\"missing\")",
+    "after": "return raw.where(raw.isin(_GENERIC_NA), other=\"missing\")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:222",
+    "before": "return raw.where(~raw.isin(_GENERIC_NA), other=\"missing\")",
+    "after": "return raw.where(~raw.isin(_GENERIC_NA), other=\"XXmissingXX\")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:222",
+    "before": "return raw.where(~raw.isin(_GENERIC_NA), other=\"missing\")",
+    "after": "return raw.where(~raw.isin(_GENERIC_NA), other=\"MISSING\")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:239",
+    "before": "index=frame.index,",
+    "after": "index=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:239",
+    "before": "index=frame.index,",
+    "after": ")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:235",
+    "before": "\"income\": _income_dollars(frame[\"income\"]),",
+    "after": "\"XXincomeXX\": _income_dollars(frame[\"income\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:235",
+    "before": "\"income\": _income_dollars(frame[\"income\"]),",
+    "after": "\"INCOME\": _income_dollars(frame[\"income\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:236",
+    "before": "\"loan_to_value_ratio\": _clean_ltv(frame[\"loan_to_value_ratio\"]),",
+    "after": "\"XXloan_to_value_ratioXX\": _clean_ltv(frame[\"loan_to_value_ratio\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:236",
+    "before": "\"loan_to_value_ratio\": _clean_ltv(frame[\"loan_to_value_ratio\"]),",
+    "after": "\"LOAN_TO_VALUE_RATIO\": _clean_ltv(frame[\"loan_to_value_ratio\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:237",
+    "before": "\"debt_to_income_ratio\": _dti_numeric(frame[\"debt_to_income_ratio\"]),",
+    "after": "\"XXdebt_to_income_ratioXX\": _dti_numeric(frame[\"debt_to_income_ratio\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:237",
+    "before": "\"debt_to_income_ratio\": _dti_numeric(frame[\"debt_to_income_ratio\"]),",
+    "after": "\"DEBT_TO_INCOME_RATIO\": _dti_numeric(frame[\"debt_to_income_ratio\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:241",
+    "before": "missing_flags = numeric.isna().astype(int).add_suffix(\"_missing\")",
+    "after": "missing_flags = None"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:241",
+    "before": "missing_flags = numeric.isna().astype(int).add_suffix(\"_missing\")",
+    "after": "missing_flags = numeric.isna().astype(int).add_suffix(None)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:241",
+    "before": "missing_flags = numeric.isna().astype(int).add_suffix(\"_missing\")",
+    "after": "missing_flags = numeric.isna().astype(None).add_suffix(\"_missing\")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:241",
+    "before": "missing_flags = numeric.isna().astype(int).add_suffix(\"_missing\")",
+    "after": "missing_flags = numeric.isna().astype(int).add_suffix(\"XX_missingXX\")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:241",
+    "before": "missing_flags = numeric.isna().astype(int).add_suffix(\"_missing\")",
+    "after": "missing_flags = numeric.isna().astype(int).add_suffix(\"_MISSING\")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:242",
+    "before": "numeric = numeric.fillna(numeric.median(numeric_only=True))",
+    "after": "numeric = numeric.fillna(numeric.median(numeric_only=None))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:242",
+    "before": "numeric = numeric.fillna(numeric.median(numeric_only=True))",
+    "after": "numeric = numeric.fillna(numeric.median(numeric_only=False))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:239",
+    "before": "index=frame.index,",
+    "after": "index=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:239",
+    "before": "index=frame.index,",
+    "after": ")"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:246",
+    "before": "\"loan_purpose\": _clean_categorical(frame[\"loan_purpose\"]),",
+    "after": "\"XXloan_purposeXX\": _clean_categorical(frame[\"loan_purpose\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:246",
+    "before": "\"loan_purpose\": _clean_categorical(frame[\"loan_purpose\"]),",
+    "after": "\"LOAN_PURPOSE\": _clean_categorical(frame[\"loan_purpose\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:247",
+    "before": "\"lien_status\": _clean_categorical(frame[\"lien_status\"]),",
+    "after": "\"XXlien_statusXX\": _clean_categorical(frame[\"lien_status\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:247",
+    "before": "\"lien_status\": _clean_categorical(frame[\"lien_status\"]),",
+    "after": "\"LIEN_STATUS\": _clean_categorical(frame[\"lien_status\"]),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:251",
+    "before": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=True)",
+    "after": "categorical_dummies = None"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:251",
+    "before": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=True)",
+    "after": "categorical_dummies = pd.get_dummies(categorical, prefix=None, drop_first=True)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:251",
+    "before": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=True)",
+    "after": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=None)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:251",
+    "before": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=True)",
+    "after": "categorical_dummies = pd.get_dummies(categorical, drop_first=True)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:251",
+    "before": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=True)",
+    "after": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, )"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:251",
+    "before": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=True)",
+    "after": "categorical_dummies = pd.get_dummies(categorical, prefix=categorical.columns, drop_first=False)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:257",
+    "before": "if len(frame) == 0:",
+    "after": "if len(frame) == 1:"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:258",
+    "before": "return 0.0",
+    "after": "return 1.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:270",
+    "before": "counts = frame.groupby(group_column, observed=True).size()",
+    "after": "counts = frame.groupby(group_column, observed=None).size()"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:270",
+    "before": "counts = frame.groupby(group_column, observed=True).size()",
+    "after": "counts = frame.groupby(group_column, ).size()"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:270",
+    "before": "counts = frame.groupby(group_column, observed=True).size()",
+    "after": "counts = frame.groupby(group_column, observed=False).size()"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:271",
+    "before": "eligible = counts[counts >= min_count].index",
+    "after": "eligible = counts[counts > min_count].index"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:274",
+    "before": "f\"no value of {group_column!r} meets min_count={min_count}; \"",
+    "after": "None"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:275",
+    "before": "\"cannot pick a default reference group\"",
+    "after": "\"XXcannot pick a default reference groupXX\""
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:275",
+    "before": "\"cannot pick a default reference group\"",
+    "after": "\"CANNOT PICK A DEFAULT REFERENCE GROUP\""
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:280",
+    "before": ".groupby(group_column, observed=True)[\"denial\"]",
+    "after": ".groupby(group_column, observed=None)[\"denial\"]"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:280",
+    "before": ".groupby(group_column, observed=True)[\"denial\"]",
+    "after": ".groupby(group_column, )[\"denial\"]"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:280",
+    "before": ".groupby(group_column, observed=True)[\"denial\"]",
+    "after": ".groupby(group_column, observed=False)[\"denial\"]"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:320",
+    "before": "counts = working.groupby(group_column, observed=True).size()",
+    "after": "counts = working.groupby(group_column, observed=None).size()"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:320",
+    "before": "counts = working.groupby(group_column, observed=True).size()",
+    "after": "counts = working.groupby(group_column, ).size()"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:320",
+    "before": "counts = working.groupby(group_column, observed=True).size()",
+    "after": "counts = working.groupby(group_column, observed=False).size()"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:321",
+    "before": "reference_count = int(counts.get(reference_group_value, 0))",
+    "after": "reference_count = int(counts.get(reference_group_value, None))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:321",
+    "before": "reference_count = int(counts.get(reference_group_value, 0))",
+    "after": "reference_count = int(counts.get(reference_group_value, ))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:321",
+    "before": "reference_count = int(counts.get(reference_group_value, 0))",
+    "after": "reference_count = int(counts.get(reference_group_value, 1))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:327",
+    "before": "group_count = int(counts.get(group_value, 0))",
+    "after": "group_count = int(counts.get(group_value, None))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:327",
+    "before": "group_count = int(counts.get(group_value, 0))",
+    "after": "group_count = int(counts.get(group_value, ))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:327",
+    "before": "group_count = int(counts.get(group_value, 0))",
+    "after": "group_count = int(counts.get(group_value, 1))"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:328",
+    "before": "if group_count < min_count or reference_count < min_count:",
+    "after": "if group_count <= min_count or reference_count < min_count:"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:328",
+    "before": "if group_count < min_count or reference_count < min_count:",
+    "after": "if group_count < min_count or reference_count <= min_count:"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:335",
+    "before": "group_value=str(group_value),",
+    "after": "group_value=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:336",
+    "before": "reference_group_value=str(reference_group_value),",
+    "after": "reference_group_value=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:341",
+    "before": "n_reference=reference_count,",
+    "after": "n_reference=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:342",
+    "before": "n_controlled=0,",
+    "after": "n_controlled=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:335",
+    "before": "group_value=str(group_value),",
+    "after": "group_value=str(None),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:336",
+    "before": "reference_group_value=str(reference_group_value),",
+    "after": "reference_group_value=str(None),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:337",
+    "before": "raw_gap_pp=float(\"nan\"),",
+    "after": "raw_gap_pp=float(\"NAN\"),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:338",
+    "before": "controlled_gap_pp=float(\"nan\"),",
+    "after": "controlled_gap_pp=float(\"NAN\"),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:342",
+    "before": "n_controlled=0,",
+    "after": "n_controlled=1,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:346",
+    "before": "continue",
+    "after": "break"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:350",
+    "before": "is_group = (subset[group_column] == group_value).astype(int)",
+    "after": "is_group = (subset[group_column] == group_value).astype(None)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:362",
+    "before": "reference_group_value=str(reference_group_value),",
+    "after": "reference_group_value=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:368",
+    "before": "n_controlled=len(subset),",
+    "after": "n_controlled=None,"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:362",
+    "before": "reference_group_value=str(reference_group_value),",
+    "after": "reference_group_value=str(None),"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:258",
+    "before": "return 0.0",
+    "after": "return 1.0"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:391",
+    "before": "model = LogisticRegression(max_iter=2000)",
+    "after": "model = LogisticRegression(max_iter=2001)"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:394",
+    "before": "group_col_idx = list(design.columns).index(\"__group_indicator__\")",
+    "after": "group_col_idx = None"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:397",
+    "before": "with_group[\"__group_indicator__\"] = 1",
+    "after": "with_group[\"__group_indicator__\"] = 2"
+   },
+   {
+    "where": "src/hmda/fairness/controlled.py:407",
+    "before": "return float(100.0 * np.mean(prob_with - prob_without))",
+    "after": "return float(101.0 * np.mean(prob_with - prob_without))"
+   }
+  ]
+ }
+}

@@ -1,0 +1,28 @@
+name: claims
+
+# Every number in the README's results table traces to a record in
+# .claimtrail/. This job re-checks that on every push. It does not re-run the
+# national audit (36.7M rows do not fit in CI); it checks the committed
+# results, the claims stated about them, and the verification log.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  claims:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install claimtrail==0.5.1
+      - name: Results still match their records (fails if a results file changed)
+        run: python scripts/record_claims.py
+      - name: Every structured assertion holds
+        run: claimtrail check --paper hmda-audit
+      - name: Every number in the README results table is supported
+        run: claimtrail audit-report README.md
+      - name: The verification log is intact
+        run: claimtrail verifications --check-chain

@@ -1,0 +1,9 @@
+{
+  "source": "full DuckDB SQL over data/hmda.duckdb",
+  "command": "hmda verify --counts",
+  "status": "MEASURED",
+  "applications": 36734685,
+  "lenders": 5329,
+  "years": 3,
+  "years_label": "2023, 2024, 2025"
+}

@@ -1,0 +1,856 @@
+{
+  "status": "SAMPLE_BASED",
+  "command": "python experiments/nn_probe.py --n 500000 --seeds 0 1 2 3 4",
+  "source": "SOURCE: national -- 36,734,685 rows, all states, data/parquet/*.parquet (raw, uncleaned)",
+  "note": "Every number is a SAMPLE number from a stratified national sample, one draw per seed. Probe AUCs measure how readable Black vs White applicant status is from inputs or hidden layers; they do not measure intent or legal disparate treatment. Std uses ddof=1.",
+  "design": {
+    "sample_rows_requested": 500000,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "split": "train 2023-2024 (90%), validation 2023-2024 (10%, random), test 2025",
+    "max_epochs": 30,
+    "patience": 4,
+    "network": "inputs -> 64 -> 32 -> 1, ReLU, Adam lr 1e-3",
+    "probe_split": "Black/White test rows, fit on one half, AUC on the other",
+    "linear_probe": "LogisticRegression on standardized features",
+    "mlp_probe": "MLPClassifier(hidden_layer_sizes=(64,)) on standardized features, one epoch per partial_fit, early-stopped on log loss of a 10% hold-out of the fitting half (patience 5)"
+  },
+  "aggregate": {
+    "denial_auc": {
+      "neural_net": {
+        "mean": 0.8375,
+        "std": 0.0077,
+        "min": 0.8239,
+        "max": 0.8423
+      },
+      "logistic_regression": {
+        "mean": 0.7839,
+        "std": 0.001,
+        "min": 0.7824,
+        "max": 0.7852
+      },
+      "lightgbm": {
+        "mean": 0.8591,
+        "std": 0.001,
+        "min": 0.8575,
+        "max": 0.8602
+      }
+    },
+    "race_probe_auc_linear": {
+      "input_features": {
+        "mean": 0.6783,
+        "std": 0.0035,
+        "min": 0.6753,
+        "max": 0.6844
+      },
+      "hidden_layer_1": {
+        "mean": 0.6729,
+        "std": 0.005,
+        "min": 0.6685,
+        "max": 0.6794
+      },
+      "hidden_layer_2": {
+        "mean": 0.659,
+        "std": 0.0062,
+        "min": 0.6522,
+        "max": 0.6666
+      },
+      "control_random_init_layer_2": {
+        "mean": 0.6423,
+        "std": 0.0065,
+        "min": 0.6348,
+        "max": 0.652
+      },
+      "control_shuffled_labels_layer_2": {
+        "mean": 0.4994,
+        "std": 0.0028,
+        "min": 0.497,
+        "max": 0.5027
+      }
+    },
+    "race_probe_auc_mlp": {
+      "input_features": {
+        "mean": 0.6875,
+        "std": 0.0048,
+        "min": 0.6825,
+        "max": 0.6951
+      },
+      "hidden_layer_1": {
+        "mean": 0.6748,
+        "std": 0.0054,
+        "min": 0.6695,
+        "max": 0.6825
+      },
+      "hidden_layer_2": {
+        "mean": 0.6723,
+        "std": 0.007,
+        "min": 0.6632,
+        "max": 0.6798
+      },
+      "control_random_init_layer_2": {
+        "mean": 0.6644,
+        "std": 0.0041,
+        "min": 0.6608,
+        "max": 0.6715
+      },
+      "control_shuffled_labels_layer_2": {
+        "mean": 0.5017,
+        "std": 0.0039,
+        "min": 0.4971,
+        "max": 0.5076
+      }
+    },
+    "denial_score_only_auc": {
+      "mean": 0.58,
+      "std": 0.0044,
+      "min": 0.5746,
+      "max": 0.5845
+    },
+    "best_epoch": {
+      "mean": 25.4,
+      "std": 9.7365,
+      "min": 8.0,
+      "max": 30.0
+    },
+    "seeds_where_early_stopping_fired": 1,
+    "paired_differences": {
+      "linear: input_features minus hidden_layer_1": {
+        "mean": 0.0054,
+        "std": 0.0062,
+        "min": -0.0026,
+        "max": 0.0131
+      },
+      "linear: hidden_layer_1 minus hidden_layer_2": {
+        "mean": 0.0139,
+        "std": 0.0026,
+        "min": 0.0103,
+        "max": 0.0164
+      },
+      "linear: hidden_layer_2 minus control_random_init_layer_2": {
+        "mean": 0.0167,
+        "std": 0.0094,
+        "min": 0.0043,
+        "max": 0.0275
+      },
+      "mlp: input_features minus hidden_layer_1": {
+        "mean": 0.0126,
+        "std": 0.0049,
+        "min": 0.0075,
+        "max": 0.0189
+      },
+      "mlp: hidden_layer_1 minus hidden_layer_2": {
+        "mean": 0.0025,
+        "std": 0.0032,
+        "min": -0.0022,
+        "max": 0.0063
+      },
+      "mlp: hidden_layer_2 minus control_random_init_layer_2": {
+        "mean": 0.0078,
+        "std": 0.0062,
+        "min": -0.0004,
+        "max": 0.0169
+      },
+      "mlp minus linear: input_features": {
+        "mean": 0.0091,
+        "std": 0.0027,
+        "min": 0.0056,
+        "max": 0.0114
+      },
+      "mlp minus linear: hidden_layer_1": {
+        "mean": 0.0019,
+        "std": 0.0059,
+        "min": -0.0052,
+        "max": 0.0112
+      },
+      "mlp minus linear: hidden_layer_2": {
+        "mean": 0.0133,
+        "std": 0.0062,
+        "min": 0.0069,
+        "max": 0.0225
+      },
+      "mlp minus linear: control_random_init_layer_2": {
+        "mean": 0.0222,
+        "std": 0.0061,
+        "min": 0.0117,
+        "max": 0.0266
+      }
+    }
+  },
+  "input_feature_race_signal": {
+    "method": "Standardized coefficients of the linear probe on input features (positive = higher odds the applicant is Black), and each feature's one-feature AUC, max(auc, 1 - auc). One-hot columns are collinear, so single coefficients can split across dummies; read the one-feature AUC as the more stable number.",
+    "top10_by_abs_coef": [
+      {
+        "feature": "property_value",
+        "readable": "Property value",
+        "coef": {
+          "mean": -1.4474,
+          "std": 0.9952,
+          "min": -2.5836,
+          "max": -0.2615
+        },
+        "seeds_in_top5_by_abs_coef": 5,
+        "single_feature_auc": {
+          "mean": 0.5991,
+          "std": 0.0023,
+          "min": 0.5966,
+          "max": 0.6022
+        }
+      },
+      {
+        "feature": "debt_to_income_rank",
+        "readable": "Debt-to-income band",
+        "coef": {
+          "mean": 0.2599,
+          "std": 0.0125,
+          "min": 0.2406,
+          "max": 0.2726
+        },
+        "seeds_in_top5_by_abs_coef": 5,
+        "single_feature_auc": {
+          "mean": 0.5937,
+          "std": 0.004,
+          "min": 0.589,
+          "max": 0.5993
+        }
+      },
+      {
+        "feature": "loan_type_1",
+        "readable": "loan type: Conventional",
+        "coef": {
+          "mean": -0.1413,
+          "std": 0.0104,
+          "min": -0.1577,
+          "max": -0.1311
+        },
+        "seeds_in_top5_by_abs_coef": 4,
+        "single_feature_auc": {
+          "mean": 0.5839,
+          "std": 0.0037,
+          "min": 0.5779,
+          "max": 0.5872
+        }
+      },
+      {
+        "feature": "loan_type_2",
+        "readable": "loan type: FHA insured",
+        "coef": {
+          "mean": 0.1242,
+          "std": 0.01,
+          "min": 0.113,
+          "max": 0.1398
+        },
+        "seeds_in_top5_by_abs_coef": 1,
+        "single_feature_auc": {
+          "mean": 0.5564,
+          "std": 0.0029,
+          "min": 0.5511,
+          "max": 0.5582
+        }
+      },
+      {
+        "feature": "business_or_commercial_purpose_1111",
+        "readable": "business or commercial purpose: Exempt",
+        "coef": {
+          "mean": -0.1143,
+          "std": 0.1288,
+          "min": -0.2928,
+          "max": 0.023
+        },
+        "seeds_in_top5_by_abs_coef": 2,
+        "single_feature_auc": {
+          "mean": 0.51,
+          "std": 0.0009,
+          "min": 0.5084,
+          "max": 0.5106
+        }
+      },
+      {
+        "feature": "missingindicator_loan_to_value_ratio",
+        "readable": "Loan-to-value ratio (missing)",
+        "coef": {
+          "mean": 0.1138,
+          "std": 0.0186,
+          "min": 0.0982,
+          "max": 0.1409
+        },
+        "seeds_in_top5_by_abs_coef": 0,
+        "single_feature_auc": {
+          "mean": 0.517,
+          "std": 0.0025,
+          "min": 0.5142,
+          "max": 0.5209
+        }
+      },
+      {
+        "feature": "missingindicator_debt_to_income_rank",
+        "readable": "Debt-to-income band (missing)",
+        "coef": {
+          "mean": 0.0917,
+          "std": 0.0145,
+          "min": 0.0818,
+          "max": 0.1162
+        },
+        "seeds_in_top5_by_abs_coef": 0,
+        "single_feature_auc": {
+          "mean": 0.5085,
+          "std": 0.0041,
+          "min": 0.5057,
+          "max": 0.5157
+        }
+      },
+      {
+        "feature": "income_dollars",
+        "readable": "Income",
+        "coef": {
+          "mean": -0.083,
+          "std": 0.0764,
+          "min": -0.2089,
+          "max": -0.0112
+        },
+        "seeds_in_top5_by_abs_coef": 1,
+        "single_feature_auc": {
+          "mean": 0.5947,
+          "std": 0.0039,
+          "min": 0.5907,
+          "max": 0.6006
+        }
+      },
+      {
+        "feature": "reverse_mortgage_2",
+        "readable": "reverse mortgage: Not reverse mortgage",
+        "coef": {
+          "mean": 0.0692,
+          "std": 0.0485,
+          "min": 0.0087,
+          "max": 0.1317
+        },
+        "seeds_in_top5_by_abs_coef": 0,
+        "single_feature_auc": {
+          "mean": 0.5105,
+          "std": 0.001,
+          "min": 0.5087,
+          "max": 0.5112
+        }
+      },
+      {
+        "feature": "loan_type_3",
+        "readable": "loan type: VA guaranteed",
+        "coef": {
+          "mean": 0.0667,
+          "std": 0.0103,
+          "min": 0.0495,
+          "max": 0.0767
+        },
+        "seeds_in_top5_by_abs_coef": 0,
+        "single_feature_auc": {
+          "mean": 0.5281,
+          "std": 0.0015,
+          "min": 0.5267,
+          "max": 0.5299
+        }
+      }
+    ],
+    "top10_by_single_feature_auc": [
+      {
+        "feature": "property_value",
+        "readable": "Property value",
+        "coef": {
+          "mean": -1.4474,
+          "std": 0.9952,
+          "min": -2.5836,
+          "max": -0.2615
+        },
+        "seeds_in_top5_by_abs_coef": 5,
+        "single_feature_auc": {
+          "mean": 0.5991,
+          "std": 0.0023,
+          "min": 0.5966,
+          "max": 0.6022
+        }
+      },
+      {
+        "feature": "income_dollars",
+        "readable": "Income",
+        "coef": {
+          "mean": -0.083,
+          "std": 0.0764,
+          "min": -0.2089,
+          "max": -0.0112
+        },
+        "seeds_in_top5_by_abs_coef": 1,
+        "single_feature_auc": {
+          "mean": 0.5947,
+          "std": 0.0039,
+          "min": 0.5907,
+          "max": 0.6006
+        }
+      },
+      {
+        "feature": "debt_to_income_rank",
+        "readable": "Debt-to-income band",
+        "coef": {
+          "mean": 0.2599,
+          "std": 0.0125,
+          "min": 0.2406,
+          "max": 0.2726
+        },
+        "seeds_in_top5_by_abs_coef": 5,
+        "single_feature_auc": {
+          "mean": 0.5937,
+          "std": 0.004,
+          "min": 0.589,
+          "max": 0.5993
+        }
+      },
+      {
+        "feature": "loan_to_value_ratio",
+        "readable": "Loan-to-value ratio",
+        "coef": {
+          "mean": 0.0614,
+          "std": 0.0877,
+          "min": -0.0178,
+          "max": 0.1841
+        },
+        "seeds_in_top5_by_abs_coef": 1,
+        "single_feature_auc": {
+          "mean": 0.5859,
+          "std": 0.0034,
+          "min": 0.5817,
+          "max": 0.5898
+        }
+      },
+      {
+        "feature": "loan_type_1",
+        "readable": "loan type: Conventional",
+        "coef": {
+          "mean": -0.1413,
+          "std": 0.0104,
+          "min": -0.1577,
+          "max": -0.1311
+        },
+        "seeds_in_top5_by_abs_coef": 4,
+        "single_feature_auc": {
+          "mean": 0.5839,
+          "std": 0.0037,
+          "min": 0.5779,
+          "max": 0.5872
+        }
+      },
+      {
+        "feature": "loan_type_2",
+        "readable": "loan type: FHA insured",
+        "coef": {
+          "mean": 0.1242,
+          "std": 0.01,
+          "min": 0.113,
+          "max": 0.1398
+        },
+        "seeds_in_top5_by_abs_coef": 1,
+        "single_feature_auc": {
+          "mean": 0.5564,
+          "std": 0.0029,
+          "min": 0.5511,
+          "max": 0.5582
+        }
+      },
+      {
+        "feature": "loan_to_income_ratio",
+        "readable": "Loan-to-income ratio",
+        "coef": {
+          "mean": -0.055,
+          "std": 0.062,
+          "min": -0.146,
+          "max": 0.0017
+        },
+        "seeds_in_top5_by_abs_coef": 1,
+        "single_feature_auc": {
+          "mean": 0.5363,
+          "std": 0.0021,
+          "min": 0.5339,
+          "max": 0.5383
+        }
+      },
+      {
+        "feature": "loan_amount",
+        "readable": "Loan amount",
+        "coef": {
+          "mean": -0.0393,
+          "std": 0.1019,
+          "min": -0.1905,
+          "max": 0.0497
+        },
+        "seeds_in_top5_by_abs_coef": 1,
+        "single_feature_auc": {
+          "mean": 0.5348,
+          "std": 0.0036,
+          "min": 0.5314,
+          "max": 0.5406
+        }
+      },
+      {
+        "feature": "open-end_line_of_credit_2",
+        "readable": "open-end line of credit: Not open-end",
+        "coef": {
+          "mean": 0.0244,
+          "std": 0.039,
+          "min": -0.0234,
+          "max": 0.0618
+        },
+        "seeds_in_top5_by_abs_coef": 0,
+        "single_feature_auc": {
+          "mean": 0.5339,
+          "std": 0.0037,
+          "min": 0.5309,
+          "max": 0.5403
+        }
+      },
+      {
+        "feature": "loan_type_3",
+        "readable": "loan type: VA guaranteed",
+        "coef": {
+          "mean": 0.0667,
+          "std": 0.0103,
+          "min": 0.0495,
+          "max": 0.0767
+        },
+        "seeds_in_top5_by_abs_coef": 0,
+        "single_feature_auc": {
+          "mean": 0.5281,
+          "std": 0.0015,
+          "min": 0.5267,
+          "max": 0.5299
+        }
+      }
+    ]
+  },
+  "per_seed": [
+    {
+      "seed": 0,
+      "sample_rows": 500000,
+      "rows_train": 204311,
+      "rows_validation": 22920,
+      "rows_test": 126532,
+      "n_features_after_imputation": 51,
+      "probe_rows_black_white": 92556,
+      "black_share": 0.11240762349280435,
+      "training": {
+        "best_epoch": 30,
+        "epochs_run": 30,
+        "best_val_loss": 0.3711642324924469,
+        "val_loss_history": [
+          0.47454,
+          0.43333,
+          0.42188,
+          0.41334,
+          0.40585,
+          0.39839,
+          0.39285,
+          0.38852,
+          0.38517,
+          0.38259,
+          0.38022,
+          0.37882,
+          0.37783,
+          0.37672,
+          0.37646,
+          0.3756,
+          0.37446,
+          0.37383,
+          0.37388,
+          0.37408,
+          0.37323,
+          0.37386,
+          0.37236,
+          0.37221,
+          0.37223,
+          0.37193,
+          0.37152,
+          0.37254,
+          0.37179,
+          0.37116
+        ]
+      },
+      "denial_auc": {
+        "neural_net": 0.8408201087149223,
+        "logistic_regression": 0.7834963504421049,
+        "lightgbm": 0.8596786148913327
+      },
+      "race_probe_auc_linear": {
+        "input_features": 0.6752665518222382,
+        "hidden_layer_1": 0.6685555328752947,
+        "hidden_layer_2": 0.6521940142737358,
+        "control_random_init_layer_2": 0.6347530072542983,
+        "control_shuffled_labels_layer_2": 0.4970265187922226
+      },
+      "race_probe_auc_mlp": {
+        "input_features": 0.6863380255510966,
+        "hidden_layer_1": 0.6702608548245527,
+        "hidden_layer_2": 0.6674848816927061,
+        "control_random_init_layer_2": 0.6608492507285934,
+        "control_shuffled_labels_layer_2": 0.5027171691759206
+      },
+      "denial_score_only_auc": 0.5777854208432909,
+      "seconds": 102.8
+    },
+    {
+      "seed": 1,
+      "sample_rows": 500000,
+      "rows_train": 203973,
+      "rows_validation": 22597,
+      "rows_test": 126811,
+      "n_features_after_imputation": 51,
+      "probe_rows_black_white": 92681,
+      "black_share": 0.1113281039263711,
+      "training": {
+        "best_epoch": 8,
+        "epochs_run": 12,
+        "best_val_loss": 0.4067443907260895,
+        "val_loss_history": [
+          0.50328,
+          0.44806,
+          0.43497,
+          0.42767,
+          0.42009,
+          0.41378,
+          0.40973,
+          0.40674,
+          0.40746,
+          0.40793,
+          0.4093,
+          0.41261
+        ]
+      },
+      "denial_auc": {
+        "neural_net": 0.8238737697223415,
+        "logistic_regression": 0.7841491953759303,
+        "lightgbm": 0.8575177492173508
+      },
+      "race_probe_auc_linear": {
+        "input_features": 0.6770996489232473,
+        "hidden_layer_1": 0.6684690784290122,
+        "hidden_layer_2": 0.6563065700351762,
+        "control_random_init_layer_2": 0.6519803922217058,
+        "control_shuffled_labels_layer_2": 0.5027125841121638
+      },
+      "race_probe_auc_mlp": {
+        "input_features": 0.6884518841673682,
+        "hidden_layer_1": 0.6695214682790331,
+        "hidden_layer_2": 0.6632337428900595,
+        "control_random_init_layer_2": 0.6636698318304584,
+        "control_shuffled_labels_layer_2": 0.5075700260296633
+      },
+      "denial_score_only_auc": 0.5745948395319009,
+      "seconds": 87.6
+    },
+    {
+      "seed": 2,
+      "sample_rows": 500000,
+      "rows_train": 203823,
+      "rows_validation": 22696,
+      "rows_test": 126730,
+      "n_features_after_imputation": 51,
+      "probe_rows_black_white": 92806,
+      "black_share": 0.11311768635648557,
+      "training": {
+        "best_epoch": 30,
+        "epochs_run": 30,
+        "best_val_loss": 0.370090514421463,
+        "val_loss_history": [
+          0.47377,
+          0.43337,
+          0.41992,
+          0.41238,
+          0.40461,
+          0.39678,
+          0.39127,
+          0.38841,
+          0.38526,
+          0.38211,
+          0.38079,
+          0.37885,
+          0.37859,
+          0.37697,
+          0.37638,
+          0.37452,
+          0.3749,
+          0.3737,
+          0.37312,
+          0.37299,
+          0.37303,
+          0.37161,
+          0.3722,
+          0.37152,
+          0.37201,
+          0.37175,
+          0.37038,
+          0.37048,
+          0.37013,
+          0.37009
+        ]
+      },
+      "denial_auc": {
+        "neural_net": 0.8398853204206003,
+        "logistic_regression": 0.7824350500158179,
+        "lightgbm": 0.8593300777480259
+      },
+      "race_probe_auc_linear": {
+        "input_features": 0.6844343282505854,
+        "hidden_layer_1": 0.6713574175623563,
+        "hidden_layer_2": 0.6555766187796244,
+        "control_random_init_layer_2": 0.6448876394366877,
+        "control_shuffled_labels_layer_2": 0.4975648419033828
+      },
+      "race_probe_auc_mlp": {
+        "input_features": 0.695059254701513,
+        "hidden_layer_1": 0.6825298350725535,
+        "hidden_layer_2": 0.6780610849410116,
+        "control_random_init_layer_2": 0.6715171803312532,
+        "control_shuffled_labels_layer_2": 0.49709295944123066
+      },
+      "denial_score_only_auc": 0.5787521832853182,
+      "seconds": 102.1
+    },
+    {
+      "seed": 3,
+      "sample_rows": 500000,
+      "rows_train": 203761,
+      "rows_validation": 22616,
+      "rows_test": 126780,
+      "n_features_after_imputation": 51,
+      "probe_rows_black_white": 92896,
+      "black_share": 0.11269591801584568,
+      "training": {
+        "best_epoch": 30,
+        "epochs_run": 30,
+        "best_val_loss": 0.3665134012699127,
+        "val_loss_history": [
+          0.46542,
+          0.4332,
+          0.42067,
+          0.41102,
+          0.40002,
+          0.39202,
+          0.38626,
+          0.38302,
+          0.38035,
+          0.37805,
+          0.3763,
+          0.37417,
+          0.37361,
+          0.37231,
+          0.37147,
+          0.37099,
+          0.36999,
+          0.36964,
+          0.3694,
+          0.36854,
+          0.36808,
+          0.36802,
+          0.36841,
+          0.36754,
+          0.36738,
+          0.36755,
+          0.36653,
+          0.36715,
+          0.36704,
+          0.36651
+        ]
+      },
+      "denial_auc": {
+        "neural_net": 0.8423420096569884,
+        "logistic_regression": 0.784285805077367,
+        "lightgbm": 0.8589006213245405
+      },
+      "race_probe_auc_linear": {
+        "input_features": 0.6780413077007884,
+        "hidden_layer_1": 0.6768921153318274,
+        "hidden_layer_2": 0.6665716353956668,
+        "control_random_init_layer_2": 0.6390555180246058,
+        "control_shuffled_labels_layer_2": 0.49744736567588327
+      },
+      "race_probe_auc_mlp": {
+        "input_features": 0.6850175784531224,
+        "hidden_layer_1": 0.6775198814034489,
+        "hidden_layer_2": 0.6797641915739675,
+        "control_random_init_layer_2": 0.6628825367834557,
+        "control_shuffled_labels_layer_2": 0.4993164953241364
+      },
+      "denial_score_only_auc": 0.5844704225431078,
+      "seconds": 90.5
+    },
+    {
+      "seed": 4,
+      "sample_rows": 500000,
+      "rows_train": 203608,
+      "rows_validation": 22803,
+      "rows_test": 127100,
+      "n_features_after_imputation": 51,
+      "probe_rows_black_white": 93092,
+      "black_share": 0.11285609934258582,
+      "training": {
+        "best_epoch": 29,
+        "epochs_run": 30,
+        "best_val_loss": 0.3732840120792389,
+        "val_loss_history": [
+          0.48065,
+          0.43963,
+          0.42865,
+          0.42076,
+          0.41262,
+          0.40365,
+          0.39853,
+          0.39271,
+          0.38927,
+          0.3875,
+          0.38425,
+          0.38279,
+          0.38152,
+          0.38071,
+          0.37876,
+          0.37786,
+          0.37786,
+          0.37782,
+          0.37723,
+          0.37594,
+          0.37632,
+          0.37444,
+          0.37503,
+          0.37383,
+          0.37433,
+          0.37429,
+          0.37354,
+          0.37462,
+          0.37328,
+          0.37368
+        ]
+      },
+      "denial_auc": {
+        "neural_net": 0.8404601354922221,
+        "logistic_regression": 0.7852201632089638,
+        "lightgbm": 0.8601693482760983
+      },
+      "race_probe_auc_linear": {
+        "input_features": 0.6768781210615544,
+        "hidden_layer_1": 0.6794496507423867,
+        "hidden_layer_2": 0.6644572745122668,
+        "control_random_init_layer_2": 0.640751616027637,
+        "control_shuffled_labels_layer_2": 0.5021177282393013
+      },
+      "race_probe_auc_mlp": {
+        "input_features": 0.6824533567487294,
+        "hidden_layer_1": 0.6742639858829029,
+        "hidden_layer_2": 0.672814575106536,
+        "control_random_init_layer_2": 0.6633008001213077,
+        "control_shuffled_labels_layer_2": 0.5017588184478631
+      },
+      "denial_score_only_auc": 0.5845427879461734,
+      "seconds": 85.4
+    }
+  ],
+  "seconds_total": 468.4
+}

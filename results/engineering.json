@@ -1,0 +1,17 @@
+{
+  "source": "bench/compare_pandas.py on the full national file, 2026-09-14",
+  "command": ".venv/bin/python bench/compare_pandas.py --mem",
+  "rows": 36734685,
+  "speed": {
+    "duckdb_s": 0.13,
+    "pandas_s": 24.36,
+    "factor": "185x"
+  },
+  "memory": {
+    "duckdb_gib": 0.09,
+    "pandas_gib": 10.49,
+    "factor": "119x"
+  },
+  "tables_identical": true,
+  "footnote": "An earlier same-day run on the same machine measured 208x / 93x. That run was superseded, not deleted, because machine load varies between runs; 185x/119x is the later run and is treated as canonical. Publishing the lower, superseding number and saying why is deliberate."
+}

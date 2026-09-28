@@ -1,0 +1,55 @@
+{
+  "source": "direct DuckDB query on the full file, 2026-09-14",
+  "command": "duckdb query on data/hmda.duckdb `lar`, action_taken != 6",
+  "status": "MEASURED",
+  "rows_screened": 32620789,
+  "reference_group": "Joint",
+  "race_not_available_share_pct": 26.73,
+  "rows": [
+    {
+      "group": "White",
+      "applications": 20593339,
+      "denials": 3576956
+    },
+    {
+      "group": "Race Not Available",
+      "applications": 6038818,
+      "denials": 1218839
+    },
+    {
+      "group": "Black or African American",
+      "applications": 2893734,
+      "denials": 815053
+    },
+    {
+      "group": "Asian",
+      "applications": 1976817,
+      "denials": 326450
+    },
+    {
+      "group": "Joint",
+      "applications": 702245,
+      "denials": 108563
+    },
+    {
+      "group": "American Indian or Alaska Native",
+      "applications": 243804,
+      "denials": 68681
+    },
+    {
+      "group": "2 or more minority races",
+      "applications": 84000,
+      "denials": 24875
+    },
+    {
+      "group": "Native Hawaiian or Other Pacific Islander",
+      "applications": 79000,
+      "denials": 23455
+    },
+    {
+      "group": "Free Form Text Only",
+      "applications": 9032,
+      "denials": 3782
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "source": "console output of the command below, 2026-09-28, after the 0/0 fix in air.py",
+  "command": "hmda audit --air --min-count 100 --source national",
+  "status": "MEASURED",
+  "threshold": 0.8,
+  "reference_group": "Joint",
+  "lenders_screened": 5329,
+  "lenders_flagged": 614,
+  "superseded": "615 lenders flagged (2026-09-13), before the 0/0 fix in air.py. The difference is one lender whose reference approval rate was 0.",
+  "min_count": 100,
+  "rows_screened": 32620789,
+  "rows_in_file": 36734685,
+  "exclusion_note": "Rows screened is the file after `action_taken != 6`; purchased loans are not applications.",
+  "rows": [
+    {
+      "partition": "Race",
+      "group": "2 or more minority races",
+      "ratio": 0.8326,
+      "denom": 84000,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "American Indian or Alaska Native",
+      "ratio": 0.8496,
+      "denom": 243804,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "Asian",
+      "ratio": 0.9875,
+      "denom": 1976817,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "Black or African American",
+      "ratio": 0.8497,
+      "denom": 2893734,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "Free Form Text Only",
+      "ratio": 0.6876,
+      "denom": 9032,
+      "flag": true
+    },
+    {
+      "partition": "Race",
+      "group": "Joint",
+      "ratio": 1.0,
+      "denom": 702245,
+      "flag": false,
+      "is_reference": true
+    },
+    {
+      "partition": "Race",
+      "group": "Native Hawaiian or Other Pacific Islander",
+      "ratio": 0.8317,
+      "denom": 79000,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "Race Not Available",
+      "ratio": 0.9441,
+      "denom": 6038818,
+      "flag": false
+    },
+    {
+      "partition": "Race",
+      "group": "White",
+      "ratio": 0.9774,
+      "denom": 20593339,
+      "flag": false
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Ethnicity Not Available",
+      "ratio": 0.9646,
+      "denom": 5607045,
+      "flag": false
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Free Form Text Only",
+      "ratio": 0.7701,
+      "denom": 15582,
+      "flag": true
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Hispanic or Latino",
+      "ratio": 0.9147,
+      "denom": 3878586,
+      "flag": false
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Joint",
+      "ratio": 1.0,
+      "denom": 823547,
+      "flag": false,
+      "is_reference": true
+    },
+    {
+      "partition": "Ethnicity",
+      "group": "Not Hispanic or Latino",
+      "ratio": 0.9853,
+      "denom": 22296029,
+      "flag": false
+    },
+    {
+      "partition": "Sex",
+      "group": "Female",
+      "ratio": 0.904,
+      "denom": 7312149,
+      "flag": false
+    },
+    {
+      "partition": "Sex",
+      "group": "Joint",
+      "ratio": 1.0,
+      "denom": 11015122,
+      "flag": false,
+      "is_reference": true
+    },
+    {
+      "partition": "Sex",
+      "group": "Male",
+      "ratio": 0.9309,
+      "denom": 11156760,
+      "flag": false
+    },
+    {
+      "partition": "Sex",
+      "group": "Sex Not Available",
+      "ratio": 0.9487,
+      "denom": 3136758,
+      "flag": false
+    }
+  ]
+}

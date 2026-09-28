@@ -1,0 +1,26 @@
+{
+  "disparity.svg": {
+    "source_path": "out/figures/disparity.svg",
+    "mtime": 1789426534.0870094,
+    "embedded_dc_date": "2026-09-14T18:55:34.042607",
+    "status": "MEASURED",
+    "caption": "Full national file, no sampling (36,734,685 rows).",
+    "source": "results/denial_rates.json"
+  },
+  "four_fifths.svg": {
+    "source_path": "out/figures/four_fifths.svg",
+    "mtime": 1789426534.4171033,
+    "embedded_dc_date": "2026-09-14T18:55:34.379246",
+    "status": "MEASURED",
+    "caption": "Full national file, DuckDB SQL, no sampling.",
+    "source": "results/four_fifths.json (M5)"
+  },
+  "frontier.svg": {
+    "source_path": "out/figures/frontier.svg",
+    "mtime": 1789488194.0236201,
+    "embedded_dc_date": "2026-09-15T12:03:13.953028",
+    "status": "SAMPLE_BASED",
+    "caption": "Left panel (fairness/accuracy): national, 1,500,000 rows, seeds 0/1/2 (M11). Right panel (margin cost): national, 500,000 rows, single seed 0, not independently verified (M12).",
+    "source": "results/metrics_ledger.json (M11, M12); docs/VERIFICATION.md, section 7"
+  }
+}

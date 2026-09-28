@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hmda-audit"
+version = "0.1.0"
+description = "National-scale mortgage lending-fairness and model-governance audit over the public HMDA LAR data."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Patrick Taylor" }]
+
+dependencies = [
+    "duckdb==1.5.5",
+    "pandas==3.0.5",
+    "pyarrow==25.0.1",
+    "scikit-learn==1.9.1",
+    "lightgbm==4.7.0",
+    "shap==0.52.0",
+    "matplotlib==3.11.1",
+    "click==8.5.0",
+    "jinja2==3.1.6",
+    "requests==2.34.2",
+    "numpy==2.5.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "hypothesis==6.168.2"]
+mutation = ["mutmut==3.8.0"]
+app = ["streamlit==1.64.0", "plotly==6.0.1"]
+nn = ["torch"]
+
+[project.scripts]
+hmda = "hmda.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Mutation testing (mutmut 3). It rewrites source files, so run it in a
+# separate git worktree with its own venv; see docs/VERIFICATION.md.
+[tool.mutmut]
+source_paths = ["src"]
+only_mutate = [
+    "src/hmda/fairness/air.py",
+    "src/hmda/fairness/rates.py",
+    "src/hmda/fairness/shrink.py",
+    "src/hmda/fairness/floors.py",
+]
+also_copy = ["sql/"]
+pytest_add_cli_args_test_selection = [
+    "tests/test_air.py",
+    "tests/test_rates.py",
+    "tests/test_shrink.py",
+    "tests/test_no_lender_named.py",
+    "tests/test_properties.py",
+    "tests/test_contract_details.py",
+]

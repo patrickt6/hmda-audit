@@ -1,0 +1,354 @@
+{
+  "source": "docs/CONTROLS.md (parsed table), cross-checked against `hmda verify --governance` output",
+  "total_controls": 38,
+  "backed_by_test": 37,
+  "not_implemented": 1,
+  "not_implemented_ids": [
+    "C-38"
+  ],
+  "verify_command": "hmda verify --governance",
+  "controls": [
+    {
+      "control_id": "C-01",
+      "assertion": "Protected-class fields are excluded from model inputs by an explicit allowlist, not by hoping no one adds them.",
+      "implementing_file": "src/hmda/model/features.py:151",
+      "test": "tests/test_model.py::test_no_protected_column_reaches_the_built_matrix",
+      "backed": true,
+      "sr_11_7": "Model development and implementation: model inputs are deliberate and documented (principle named in words, no clause cited)",
+      "osfi_e_23": "Model design and development: inputs are justified and documented (principle named in words, no clause cited)"
+    },
+    {
+      "control_id": "C-02",
+      "assertion": "A neighbourhood racial-composition field is excluded as a proxy for race, not merely the race field itself.",
+      "implementing_file": "src/hmda/model/features.py:143",
+      "test": "tests/test_model.py::test_the_tract_minority_share_proxy_is_excluded",
+      "backed": true,
+      "sr_11_7": "Model development: known input weaknesses and proxy effects are identified rather than assumed away",
+      "osfi_e_23": "Model design and development: proxy and unintended-bias risk in inputs is addressed"
+    },
+    {
+      "control_id": "C-03",
+      "assertion": "Post-decision pricing fields cannot become features, so the model cannot learn the answer from the outcome.",
+      "implementing_file": "src/hmda/model/features.py:104",
+      "test": "tests/test_model.py::test_post_decision_pricing_columns_are_never_features",
+      "backed": true,
+      "sr_11_7": "Model development: data quality and appropriateness for the stated purpose",
+      "osfi_e_23": "Model design and development: data appropriate to the model's stated use"
+    },
+    {
+      "control_id": "C-04",
+      "assertion": "Train and test are split by time, never randomly, so no future row informs a past prediction.",
+      "implementing_file": "src/hmda/model/features.py:370",
+      "test": "tests/test_model.py::test_no_training_row_is_dated_after_any_test_row",
+      "backed": true,
+      "sr_11_7": "Model validation, outcomes analysis: performance is measured out-of-sample in a way that reflects real use",
+      "osfi_e_23": "Independent review and validation: performance evidence reflects the intended use"
+    },
+    {
+      "control_id": "C-05",
+      "assertion": "Every challenger score ships beside a benchmark baseline score; no public function returns the challenger alone.",
+      "implementing_file": "src/hmda/model/evaluate.py:116",
+      "test": "tests/test_model.py::test_no_module_function_returns_a_challenger_score_alone",
+      "backed": true,
+      "sr_11_7": "Model validation: benchmarking against an alternative is a named core element of outcomes analysis",
+      "osfi_e_23": "Independent review and validation: challenge against alternatives"
+    },
+    {
+      "control_id": "C-06",
+      "assertion": "`run_eval` refuses an in-memory frame with no source label, so a sample number cannot print under a national or fixture label it did not come from.",
+      "implementing_file": "src/hmda/model/evaluate.py:162",
+      "test": "tests/test_model.py::test_run_eval_rejects_a_frame_with_no_source_label",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: results are documented with the data they came from",
+      "osfi_e_23": "Model lifecycle governance: outputs are traceable to the data used"
+    },
+    {
+      "control_id": "C-07",
+      "assertion": "`mitigate.prepare` refuses an in-memory frame with no source label, same reason.",
+      "implementing_file": "src/hmda/fairness/mitigate.py:276",
+      "test": "tests/test_mitigate.py::test_prepare_rejects_a_frame_with_no_source_label",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: results are documented with the data they came from",
+      "osfi_e_23": "Model lifecycle governance: outputs are traceable to the data used"
+    },
+    {
+      "control_id": "C-08",
+      "assertion": "`recourse.run_study` refuses an in-memory frame with no source label, same reason.",
+      "implementing_file": "src/hmda/fairness/recourse.py:371",
+      "test": "tests/test_recourse.py::test_run_study_rejects_a_frame_with_no_source_label",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: results are documented with the data they came from",
+      "osfi_e_23": "Model lifecycle governance: outputs are traceable to the data used"
+    },
+    {
+      "control_id": "C-09",
+      "assertion": "`explain.run_explain` refuses an in-memory frame with no source label, same reason.",
+      "implementing_file": "src/hmda/governance/explain.py:373",
+      "test": "tests/test_explain.py::test_run_explain_rejects_a_frame_with_no_source_label",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: results are documented with the data they came from",
+      "osfi_e_23": "Model lifecycle governance: outputs are traceable to the data used"
+    },
+    {
+      "control_id": "C-10",
+      "assertion": "Every data source states its own scope and row count in a label that every command prints.",
+      "implementing_file": "src/hmda/clean/source.py:244",
+      "test": "tests/test_source.py::test_fixture_source_reports_its_row_count_and_label",
+      "backed": true,
+      "sr_11_7": "Governance and documentation: the data behind a result is stated, not implied",
+      "osfi_e_23": "Data: the data used by a model is identified and documented"
+    },
+    {
+      "control_id": "C-11",
+      "assertion": "Sampling is seeded and reproducible, so a quoted number can be regenerated.",
+      "implementing_file": "src/hmda/clean/source.py:130",
+      "test": "tests/test_source.py::test_sample_is_reproducible",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: documentation sufficient for an independent party to reproduce the work",
+      "osfi_e_23": "Independent review and validation: a reviewer can reproduce the result"
+    },
+    {
+      "control_id": "C-12",
+      "assertion": "A group below the minimum-count floor is suppressed and explicitly not-a-number, never silently dropped and never reported as zero disparity.",
+      "implementing_file": "src/hmda/fairness/floors.py:13",
+      "test": "tests/test_air.py::test_air_group_below_floor_is_suppressed_not_dropped_not_a_number",
+      "backed": true,
+      "sr_11_7": "Model validation: limitations of the result are identified rather than hidden",
+      "osfi_e_23": "Model limitations are documented and communicated to users"
+    },
+    {
+      "control_id": "C-13",
+      "assertion": "The raw disparity and the controlled disparity are always returned together; no public function returns the raw gap alone.",
+      "implementing_file": "src/hmda/fairness/controlled.py:286",
+      "test": "tests/test_controlled.py::test_raw_and_controlled_always_ship_together",
+      "backed": true,
+      "sr_11_7": "Model validation, conceptual soundness: a result is not presented without the adjustment that qualifies it",
+      "osfi_e_23": "Independent review and validation: conclusions carry their qualifications"
+    },
+    {
+      "control_id": "C-14",
+      "assertion": "The \"Race Not Available\" share is reported beside every race disparity, so the reader sees the coverage behind the number.",
+      "implementing_file": "src/hmda/fairness/controlled.py:317",
+      "test": "tests/test_controlled.py::test_race_not_available_share_reported_alongside_race_comparisons",
+      "backed": true,
+      "sr_11_7": "Model development: data quality and coverage limitations are surfaced with the result",
+      "osfi_e_23": "Data: known data-quality limitations are disclosed"
+    },
+    {
+      "control_id": "C-15",
+      "assertion": "Sentinel codes are never silently cast to a number; a sentinel becomes null, not a 1,111,000-dollar income.",
+      "implementing_file": "src/hmda/clean/sentinels.py:123",
+      "test": "tests/test_sentinels.py::test_income_dollars_is_never_a_silent_float_cast_of_the_sentinel",
+      "backed": true,
+      "sr_11_7": "Model development: data quality controls on model inputs",
+      "osfi_e_23": "Data: data quality is assessed before use"
+    },
+    {
+      "control_id": "C-16",
+      "assertion": "Every exclusion appears as its own row in the row-count waterfall, naming the column and the rule that dropped the rows.",
+      "implementing_file": "src/hmda/clean/waterfall.py:69",
+      "test": "tests/test_waterfall.py::test_every_filter_row_names_its_column_and_rule",
+      "backed": true,
+      "sr_11_7": "Governance and documentation: the transformation from raw data to analysis set is reviewable",
+      "osfi_e_23": "Data: data preparation and exclusions are documented"
+    },
+    {
+      "control_id": "C-17",
+      "assertion": "The input schema is asserted stable across activity years; a header change is a hard failure, not a silent shift.",
+      "implementing_file": "src/hmda/ingest/schema.py:66",
+      "test": "tests/test_ingest.py::test_measured_header_stable_across_2023_2024_2025",
+      "backed": true,
+      "sr_11_7": "Ongoing monitoring: changes in inputs or environment are detected",
+      "osfi_e_23": "Ongoing monitoring: input stability is monitored over time"
+    },
+    {
+      "control_id": "C-18",
+      "assertion": "Every ingested file carries a deterministic SHA-256 record, so the data behind a number is identifiable after the fact.",
+      "implementing_file": "src/hmda/ingest/checksum.py:37",
+      "test": "tests/test_ingest.py::test_sha256_file_is_deterministic",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: documentation and auditability of model data",
+      "osfi_e_23": "Model lifecycle governance: data lineage is retained"
+    },
+    {
+      "control_id": "C-19",
+      "assertion": "Year-over-year population stability is monitored on the model-input allowlist and reported as a count of shifted columns.",
+      "implementing_file": "src/hmda/governance/drift.py:237",
+      "test": "tests/test_drift.py::test_check_drift_defaults_to_the_model_input_allowlist",
+      "backed": true,
+      "sr_11_7": "Ongoing monitoring, a named core element of validation",
+      "osfi_e_23": "Ongoing monitoring and performance review"
+    },
+    {
+      "control_id": "C-20",
+      "assertion": "The drift threshold is a named constant, not a magic number chosen at a call site.",
+      "implementing_file": "src/hmda/governance/drift.py:77",
+      "test": "tests/test_drift.py::test_threshold_is_a_named_constant_not_a_magic_number",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: thresholds are set by policy and documented",
+      "osfi_e_23": "Model risk framework: thresholds and tolerances are defined, not ad hoc"
+    },
+    {
+      "control_id": "C-21",
+      "assertion": "Drift is reported to users as a shifted-column count; no raw PSI value and not even the word \"PSI\" reaches the user-facing sentence.",
+      "implementing_file": "src/hmda/governance/drift.py:124",
+      "test": "tests/test_drift.py::test_sentence_never_contains_a_raw_psi_number_or_the_word_psi",
+      "backed": true,
+      "sr_11_7": "Governance: model output is communicated in terms its audience can act on",
+      "osfi_e_23": "Model limitations and results are communicated to users in usable form"
+    },
+    {
+      "control_id": "C-22",
+      "assertion": "A statistic with no approved plain-English translation is refused, never guessed at.",
+      "implementing_file": "src/hmda/model/translate.py:171",
+      "test": "tests/test_translate.py::test_an_unknown_statistic_is_refused_not_guessed",
+      "backed": true,
+      "sr_11_7": "Governance: reported model results are the ones policy allows, not improvised",
+      "osfi_e_23": "Model risk framework: reporting follows a defined standard"
+    },
+    {
+      "control_id": "C-23",
+      "assertion": "The mitigation technique registry is capped at exactly three techniques, one per pipeline stage; a fourth turns a test red.",
+      "implementing_file": "src/hmda/fairness/mitigate.py:211",
+      "test": "tests/test_mitigate.py::test_the_registry_has_exactly_three_techniques",
+      "backed": true,
+      "sr_11_7": "Model development: scope of the exercise is fixed and documented",
+      "osfi_e_23": "Model design: the model's scope and boundaries are defined"
+    },
+    {
+      "control_id": "C-24",
+      "assertion": "Every mitigation line reports the fairness gain, the accuracy cost and the margin cost together; a gain never ships without its cost.",
+      "implementing_file": "src/hmda/fairness/mitigate.py:689",
+      "test": "tests/test_mitigate.py::test_reporting_every_line_carries_all_three_numbers",
+      "backed": true,
+      "sr_11_7": "Model validation, outcomes analysis: performance is reported with its trade-offs, not selectively",
+      "osfi_e_23": "Independent review and validation: results are reported completely, including adverse findings"
+    },
+    {
+      "control_id": "C-25",
+      "assertion": "The per-group threshold technique carries a LEGALLY CONTESTED warning naming it as disparate treatment on its face in the US, measured for completeness and not presented as approved practice.",
+      "implementing_file": "src/hmda/fairness/mitigate.py:619",
+      "test": "tests/test_mitigate.py::test_reporting_flags_the_per_group_threshold_as_legally_contested",
+      "backed": true,
+      "sr_11_7": "Model use: known constraints on the acceptable use of a result are stated with it",
+      "osfi_e_23": "Model limitations, including legal and regulatory constraints, are documented"
+    },
+    {
+      "control_id": "C-26",
+      "assertion": "No mitigation output may be described as deployed, live, or in production; every report header states it is an offline counterfactual study over historical applications.",
+      "implementing_file": "src/hmda/fairness/mitigate.py:672",
+      "test": "tests/test_mitigate.py::test_reporting_never_claims_deployment",
+      "backed": true,
+      "sr_11_7": "Model use: the actual use of the model is stated and not overstated",
+      "osfi_e_23": "Model lifecycle: deployment status is explicit; an unapproved model is not described as in use"
+    },
+    {
+      "control_id": "C-27",
+      "assertion": "Every mitigation result is measured against the same unmitigated baseline, so the three techniques are comparable.",
+      "implementing_file": "src/hmda/fairness/mitigate.py:635",
+      "test": "tests/test_mitigate.py::test_every_technique_is_measured_against_the_same_unmitigated_baseline",
+      "backed": true,
+      "sr_11_7": "Model validation: benchmarking is against a common reference",
+      "osfi_e_23": "Independent review and validation: comparability of evidence"
+    },
+    {
+      "control_id": "C-28",
+      "assertion": "The economic assumptions behind the margin number live in a config file and are printed in the output header with an ILLUSTRATIVE banner, so the profit number is falsifiable.",
+      "implementing_file": "src/hmda/model/economics.py:92",
+      "test": "tests/test_economics.py::test_the_header_prints_both_assumptions_the_gate_names",
+      "backed": true,
+      "sr_11_7": "Model development: assumptions are documented and their effect on output is shown",
+      "osfi_e_23": "Model design: assumptions are documented, justified, and their sensitivity understood"
+    },
+    {
+      "control_id": "C-29",
+      "assertion": "A null or out-of-range economic assumption is refused rather than silently defaulted.",
+      "implementing_file": "src/hmda/model/economics.py:151",
+      "test": "tests/test_economics.py::test_a_null_assumption_is_refused_rather_than_defaulted",
+      "backed": true,
+      "sr_11_7": "Model implementation: input validation, failure is loud rather than silent",
+      "osfi_e_23": "Model design and development: input validation and controls"
+    },
+    {
+      "control_id": "C-30",
+      "assertion": "No protected attribute is offered to an applicant as an actionable recourse lever.",
+      "implementing_file": "src/hmda/fairness/recourse.py:70",
+      "test": "tests/test_recourse.py::test_actionable_features_hold_no_protected_attribute",
+      "backed": true,
+      "sr_11_7": "Model use: the result is constrained to the use it is fit for",
+      "osfi_e_23": "Model limitations and appropriate use are documented"
+    },
+    {
+      "control_id": "C-31",
+      "assertion": "A recourse group below the count floor is flagged and gets no number, rather than being dropped.",
+      "implementing_file": "src/hmda/fairness/recourse.py:327",
+      "test": "tests/test_recourse.py::test_small_group_is_flagged_not_dropped_and_gets_no_number",
+      "backed": true,
+      "sr_11_7": "Model validation: limitations of the result are identified rather than hidden",
+      "osfi_e_23": "Model limitations are documented and communicated"
+    },
+    {
+      "control_id": "C-32",
+      "assertion": "The explainability pack states that drivers are descriptive of the sample, not causal claims about the model's treatment of a group.",
+      "implementing_file": "src/hmda/governance/explain.py:465",
+      "test": "tests/test_explain.py::test_rendered_doc_states_drivers_are_descriptive_not_causal",
+      "backed": true,
+      "sr_11_7": "Model validation: the interpretation of model output is bounded by what the evidence supports",
+      "osfi_e_23": "Model limitations are documented and communicated to users"
+    },
+    {
+      "control_id": "C-33",
+      "assertion": "The explainability run is deterministic across two full runs, so an explanation quoted today reproduces tomorrow.",
+      "implementing_file": "src/hmda/governance/explain.py:346",
+      "test": "tests/test_explain.py::test_run_explain_is_deterministic_across_two_full_runs",
+      "backed": true,
+      "sr_11_7": "Governance, policies and controls: documentation sufficient for an independent party to reproduce the result",
+      "osfi_e_23": "Independent review and validation: a reviewer can reproduce the result"
+    },
+    {
+      "control_id": "C-34",
+      "assertion": "Every explainability driver label resolves to a data-dictionary entry; no unexplained raw column name is surfaced to a reader.",
+      "implementing_file": "src/hmda/governance/explain.py:397",
+      "test": "tests/test_explain.py::test_every_reported_overall_driver_resolves_to_a_data_dictionary_entry",
+      "backed": true,
+      "sr_11_7": "Governance and documentation: a complete data dictionary supports the model record",
+      "osfi_e_23": "Data: model inputs are defined in documentation"
+    },
+    {
+      "control_id": "C-35",
+      "assertion": "The CLI states on every disparity output that a flag is a statistical disparity warranting review and NEVER a finding of discrimination.",
+      "implementing_file": "src/hmda/cli.py:266",
+      "test": "tests/test_disparity_language.py::test_air_output_disclaims_a_finding_of_discrimination",
+      "backed": true,
+      "sr_11_7": "Model use: the permitted interpretation of the output is stated with the output",
+      "osfi_e_23": "Model limitations and appropriate use are communicated to users"
+    },
+    {
+      "control_id": "C-36",
+      "assertion": "No individual lender is ever named as discriminating; flagged lender identity is an internal artifact only.",
+      "implementing_file": "src/hmda/fairness/air.py:116",
+      "test": "tests/test_no_lender_named.py::test_air_output_names_no_flagged_lender",
+      "backed": true,
+      "sr_11_7": "Model use: constraints on the disclosure and use of model output",
+      "osfi_e_23": "Model limitations and appropriate use are documented"
+    },
+    {
+      "control_id": "C-37",
+      "assertion": "The model card states verbatim that this model is not used to make credit decisions.",
+      "implementing_file": "src/hmda/governance/model_card.py:18",
+      "test": "tests/test_model_card_language.py::test_the_shipped_model_card_contains_the_sentence_verbatim",
+      "backed": true,
+      "sr_11_7": "Governance and documentation: a model record states intended and out-of-scope use",
+      "osfi_e_23": "Model rationale and design: intended use and exclusions are documented"
+    },
+    {
+      "control_id": "C-38",
+      "assertion": "Every figure and table in the report carries a lineage record: source file, checksum, SQL file and commit.",
+      "implementing_file": "src/hmda/governance/lineage.py:13",
+      "test": "NOT IMPLEMENTED",
+      "backed": false,
+      "sr_11_7": "Governance, policies and controls: documentation and auditability of reported results",
+      "osfi_e_23": "Model lifecycle governance: results are traceable to their inputs"
+    }
+  ]
+}

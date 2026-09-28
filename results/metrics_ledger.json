@@ -1,0 +1,91 @@
+{
+  "source": "the command on each row, national data",
+  "metrics": [
+    {
+      "id": "M1",
+      "status": "MEASURED",
+      "command": "hmda verify --counts",
+      "summary": "36,734,685 rows, 5,329 LEIs, full DuckDB SQL."
+    },
+    {
+      "id": "M2",
+      "status": "SAMPLE_BASED",
+      "command": "time hmda audit --all-years --source national",
+      "summary": "--all-years runs all four audit branches. Re-measured 64.17s real, exit 0. Waterfall/AIR/controlled branches carry their own sampling caveats; drift stays fixture-scoped."
+    },
+    {
+      "id": "M3",
+      "status": "MEASURED",
+      "command": ".venv/bin/python bench/compare_pandas.py",
+      "summary": "DuckDB 0.13s vs pandas 24.36s at the full 36,734,685 rows = 185x. TABLES IDENTICAL: True. An earlier same-day run measured 208x; machine load varies between runs, and 185x is the figure kept as canonical (results/engineering.json)."
+    },
+    {
+      "id": "M4",
+      "status": "MEASURED",
+      "command": ".venv/bin/python bench/compare_pandas.py --mem",
+      "summary": "DuckDB 0.09 GiB vs pandas 10.49 GiB peak = 119x. Same run as M3; an earlier same-day run measured 93x for the same reason."
+    },
+    {
+      "id": "M5",
+      "status": "MEASURED",
+      "command": "hmda audit --air --min-count 100 --source national",
+      "summary": "Full-file DuckDB SQL, 614 lenders flagged at --min-count 100, re-run 2026-09-28 after the 0/0 fix in air.py.",
+      "correction": "Was 615 (2026-09-13). air.py gave a ratio of 0.0 and a flag when the reference approval rate was 0, so one lender whose only group was the reference group, with every application denied, was flagged against itself. The ratio is now UNDEFINED and not flagged (docs/VERIFICATION.md, section 3)."
+    },
+    {
+      "id": "M6",
+      "status": "SAMPLE_BASED",
+      "command": "hmda audit --controlled --source national",
+      "summary": "National, 200,000-row stratified sample (seed 0); the --controlled branch is pandas-bound."
+    },
+    {
+      "id": "M7",
+      "status": "SAMPLE_BASED",
+      "command": "hmda model --eval --source national --sample-n 1500000",
+      "summary": "National, 1,500,000 rows, seeds 0/1/2. GBM ranks 72% better than base rate, logistic 57%, stable across seeds, below the fixture's inflated 75%/61%."
+    },
+    {
+      "id": "M8",
+      "status": "PARTIALLY_FIXED_UNVERIFIED",
+      "command": "hmda report",
+      "summary": "A bare `hmda report` builds the model card. --figures and --frontier write the three SVG figures to out/figures/. The full HTML report (src/hmda/report/render.py) is not implemented."
+    },
+    {
+      "id": "M9",
+      "status": "MEASURED",
+      "command": "pytest -q",
+      "summary": "Most recent full-suite run: 326 passed, 6 skipped (2026-09-28, after the 0/0 fix in air.py).",
+      "superseded": "290 passed (2026-09-14), and 322 passed, 6 skipped, 1 xfailed (2026-09-28, before the 0/0 fix). Both kept for the record."
+    },
+    {
+      "id": "M10",
+      "status": "MEASURED",
+      "command": "hmda verify --governance",
+      "summary": "38 governance controls, 37 backed by a test, 1 (C-38) NOT IMPLEMENTED. hmda verify --governance exits 0."
+    },
+    {
+      "id": "M11",
+      "status": "SAMPLE_BASED",
+      "command": "hmda mitigate --compare --source national",
+      "summary": "National, 1,500,000 rows, seeds 0/1/2. Per-group thresholding cuts the gap 55-61%, fairness-constrained GBM 10.7-11.6%, reweighing 0.2-3.9%, reported as ranges, no single-seed headline."
+    },
+    {
+      "id": "M12",
+      "status": "SAMPLE_BASED",
+      "command": "hmda mitigate --profit --source national",
+      "summary": "National, 500,000 rows, seed 0 only. Sign reversed from the fixture: per-group thresholding costs $26,882 per 1,000 applications nationally, vs. the fixture's claimed +$296,556 gain."
+    },
+    {
+      "id": "M13",
+      "status": "UNMEASURABLE",
+      "command": "hmda recourse --by-group --source national",
+      "summary": "Recourse number is unstable across seeds/bootstraps on the national data, so the verdict is UNMEASURABLE: the negative result is reported instead of a number. No dollar figure is quotable; see docs/RECOURSE.md."
+    },
+    {
+      "id": "M14",
+      "status": "SAMPLE_BASED",
+      "command": "hmda explain --report --source national",
+      "summary": "National, 2,000 held-out rows, seed 0 only, no multi-seed stability claim. Counts only: no SHAP magnitude ships (docs/EXPLAINABILITY.md)."
+    }
+  ]
+}

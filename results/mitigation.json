@@ -1,0 +1,28 @@
+{
+  "source": "hmda mitigate --compare --profit --source national, run by hand; see docs/VERIFICATION.md, section 7",
+  "fixture_claim_per_1000": 296556,
+  "fixture_claim_direction": "gain",
+  "national_result_per_1000": -26882,
+  "national_result_direction": "cost",
+  "national_sample_n": 500000,
+  "national_sample_seed": 0,
+  "provenance_note": "The margin run was done by hand (seed 0, 500,000 rows) and only its result was written down, not the console output. It has not been checked a second time, so it is shown with that caveat attached, not as an independently re-measured number.",
+  "uncertainty_note": "Single seed at n=500,000, the sample size M11 shows is unreliable for this same technique (a 40.4-point spread in gap reduction across seeds 0/1/2 at n=500,000). No three-seed spread exists for the dollar figure: uncertainty on $26,882 is unquantified and probably large.",
+  "gap_reduction_range_pct": {
+    "per_group_threshold": [
+      55,
+      61
+    ],
+    "fair_constrained_gbm": [
+      10.7,
+      11.6
+    ],
+    "reweighing": [
+      0.2,
+      3.9
+    ],
+    "fixture_per_group_threshold_pct": 76.8,
+    "note": "The fixture's 76.8% for per-group thresholding sits above the entire national band."
+  },
+  "legal_flag": "per_group_threshold carries a LEGALLY CONTESTED warning (C-25): a different approval cut-off by race is disparate treatment on its face in the US. Measured for completeness, not presented as approved practice."
+}

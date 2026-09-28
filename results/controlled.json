@@ -1,0 +1,15 @@
+{
+  "source": "console output of the command below, 200,000-row stratified sample, seed 0",
+  "command": "hmda audit --controlled --source national",
+  "status": "SAMPLE_BASED",
+  "sample_n": 200000,
+  "sample_seed": 0,
+  "group": "Black or African American",
+  "reference_group": "Joint",
+  "raw_gap_pp": 12.44,
+  "controlled_gap_pp": 8.23,
+  "covariates_source": "src/hmda/fairness/controlled.py::_build_controls",
+  "covariates_plain": "income, how much of the home's value is being borrowed, debt measured against income, what the loan is for, and whether it is a first or a second mortgage",
+  "note": "The --controlled branch is pandas-bound and ran on a 200,000-row stratified sample, not the full file. No comparable fixture number exists, so this is a new national baseline, not a delta.",
+  "caveat": "The controlled gap is unexplained variation under a stated model. It is not evidence of discrimination."
+}

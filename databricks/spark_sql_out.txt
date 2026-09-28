@@ -1,0 +1,11 @@
+SUCCEEDED 
+['grp', 'n', 'denials', 'approval_rate', 'air', 'flag']
+['White', '27426', '4152', '0.8486', '1.0000', 'false']
+['Race Not Available', '9166', '1791', '0.8046', '0.9481', 'false']
+['Black or African American', '4997', '1390', '0.7218', '0.8506', 'false']
+['Asian', '1201', '176', '0.8535', '1.0057', 'false']
+['Joint', '1075', '133', '0.8763', '1.0326', 'false']
+['American Indian or Alaska Native', '263', '82', '0.6882', '0.8110', 'false']
+['2 or more minority races', '101', '23', '0.7723', '0.9100', 'false']
+['Native Hawaiian or Other Pacific Islander', '58', '20', '0.6552', '0.7721', 'true']
+['Free Form Text Only', '13', '6', '0.5385', '0.6345', 'true']
